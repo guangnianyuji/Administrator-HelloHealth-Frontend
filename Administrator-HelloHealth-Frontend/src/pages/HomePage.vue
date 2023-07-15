@@ -5,9 +5,10 @@ import LinkButtonWithIcon from "@/components/LinkButtonWithIcon.vue";
 import {changeTheme} from "@/assets/changeTheme";
 import router from "@/router";
 import axios from "axios";
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import UserInfoCard from "@/components/UserInfoCard.vue";
 import globalData from "@/global/global"
+import {ElMenuItem, ElMessage, ElSubMenu} from "element-plus";
 
 changeTheme("#0093bf")
 
@@ -26,7 +27,7 @@ const searchStart = (msg) => {
 
 const exitButtonClicked = async ()=>{
     await axios.get("/api/Logout")
-    window.location.href ="/";
+    window.location.href ="/login";
 }
 
 const notificationButtonClicked = () => {
@@ -44,14 +45,17 @@ const avatarClicked = () =>{
 }
 
 const menus = [
-    {"title":"首页","icon":"fi-rr-home","path":"/"},
-    {"title":"管理员功能1","icon":"fi-rr-capsules","path":"/"},
-    {"title":"管理员功能2","icon":"fi-rr-followcollection","path":"/"},
-    {"title":"管理员功能3","icon":"fi-rr-books","path":"/"},
-    {"title":"管理员功能4","icon":"fi-rr-user-md-chat","path":"/"},
-    {"title":"管理员功能5","icon":"fi-rr-calendar-clock","path":"/"},
-    {"title":"管理员功能6","icon":"fi-rr-user-gear","path":"/"},
-    {"title":"管理员功能7","icon":"fi-rr-headset","path":"/"},
+    {"title":"个人信息","icon":"fi-rr-user-gear","path":"/"},
+    {
+        "title":"审核","icon":"fi-rr-memo-circle-check","path":"censorSubMenu",
+        "children":[
+            {"title":"论坛审核","icon":"fi-rr-user-md-chat","path":"/forumCensor"},
+            {"title":"资质审核","icon":"fi-rr-badge","path":"/qualificationVerify"},
+        ]
+    },
+    {"title":"举报处理","icon":"fi-rr-shield","path":"/reportHandle"},
+    {"title":"药品信息管理","icon":"fi-rr-capsules","path":"/medicineManagement"},
+    {"title":"健康资讯管理","icon":"fi-rr-books","path":"/newsManagement"},
 ];
 
 let userInfo = reactive({
@@ -76,17 +80,16 @@ const isLogin = ref(false);
     let responseObj = response.data.data
     isLogin.value = responseObj.login;
 
-    if(!responseObj.login) return;
+    if(!responseObj.login){
+        // 管理员没登陆啥都干不了，直接跳到登录界面
+        ElMessage.error("登录状态失效，请重新登录。")
+        await router.push("/login");
+        return;
+    }
     globalData.login = true;
     userInfo.data = responseObj
     globalData.userInfo = userInfo.data
 })()
-
-let userGroupNameDict = {
-    "none": "点击登录",
-    "normal": "普通用户",
-    "doctor": "医生"
-}
 
 const getSidebarPath = () => {
     let path = router.currentRoute.value.path.split("/")
@@ -98,6 +101,21 @@ const getSidebarPath = () => {
 
 
 }
+
+const menu = ref();
+onMounted(()=>{
+    (()=>{
+        let menuItemNow = getSidebarPath();
+        for(let item of menus){
+            if(!item.children) continue;
+            for(let child of item.children){
+                if(child.path===menuItemNow){
+                    menu.value.open(item.path);
+                }
+            }
+        }
+    })()
+})
 
 </script>
 
@@ -111,7 +129,6 @@ const getSidebarPath = () => {
             <div class="rightTitle" v-if="isLogin">
                 <img alt="" src="../assets/titleImg1.png">
                 <LinkButtonWithIcon font-color="#fff" text="消息通知" icon="fi-rr-bell" :has-notification="userInfo.unread_notification" @click="notificationButtonClicked"></LinkButtonWithIcon>
-                <LinkButtonWithIcon font-color="#fff" text="联系客服" icon="fi-rr-headset"></LinkButtonWithIcon>
                 <div class="line">
                 </div>
                 <LinkButtonWithIcon font-color="#fff" text="退出" icon="" @click="exitButtonClicked"></LinkButtonWithIcon>
@@ -129,14 +146,17 @@ const getSidebarPath = () => {
                 </div>
 
 
-                <el-menu
-                    :default-active="getSidebarPath()"
-                    class="sideBarMenu"
-                >
-                    <el-menu-item v-for="item in menus" :index="item.path" @click="menuItemClick">
-                        <i class="fi" :class="item.icon"></i>
-                        <span>{{item.title}}</span>
-                    </el-menu-item>
+                <el-menu :default-active="getSidebarPath()" class="sideBarMenu" ref="menu">
+                    <component v-for="item in menus" :is="item.children ? ElSubMenu : ElMenuItem" :index="item.path" @click="menuItemClick">
+                        <template #title>
+                            <i class="fi" :class="item.icon"></i>
+                            <span>{{item.title}}</span>
+                        </template>
+                        <el-menu-item v-if="item.children" v-for="child in item.children" :index="child.path" @click="menuItemClick">
+                            <i class="fi" :class="child.icon"></i>
+                            <span>{{child.title}}</span>
+                        </el-menu-item>
+                    </component>
                 </el-menu>
             </div>
 

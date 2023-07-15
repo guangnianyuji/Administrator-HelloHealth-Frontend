@@ -6,7 +6,7 @@
         class="loginForm"
     >
         <div class="titleWrapper">
-            <div class="loginTitle">登录</div>
+            <div class="loginTitle">管理员登录</div>
             <div class="loginSubTitle">登录以继续</div>
         </div>
 

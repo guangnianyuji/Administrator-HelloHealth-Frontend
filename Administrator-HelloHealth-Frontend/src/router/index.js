@@ -32,6 +32,9 @@ const router = createRouter({
                     path: "",
                     name: "homeView",
                     component: ()=>import("@/views/TestView1.vue"),
+                },{
+                    path: "qualificationVerify",
+                    component: () => import("@/views/TestView2.vue")
                 }
             ]
         },{
