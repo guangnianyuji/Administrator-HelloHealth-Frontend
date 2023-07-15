@@ -49,8 +49,8 @@ const menus = [
     {
         "title":"审核","icon":"fi-rr-memo-circle-check","path":"censorSubMenu",
         "children":[
-            {"title":"论坛审核","icon":"fi-rr-user-md-chat","path":"/forumCensor"},
-            {"title":"资质审核","icon":"fi-rr-badge","path":"/qualificationVerify"},
+            {"title":"论坛发布审核","icon":"fi-rr-user-md-chat","path":"/forumCensor"},
+            {"title":"专业医生资质审核","icon":"fi-rr-badge","path":"/qualificationVerify"},
         ]
     },
     {"title":"举报处理","icon":"fi-rr-shield","path":"/reportHandle"},

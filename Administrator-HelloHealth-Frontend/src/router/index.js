@@ -34,7 +34,13 @@ const router = createRouter({
                     component: ()=>import("@/views/TestView1.vue"),
                 },{
                     path: "qualificationVerify",
-                    component: () => import("@/views/TestView2.vue")
+                    component: () => import("@/views/CheckDoctorView.vue")
+                },{
+                    path: "forumCensor",
+                    component: () => import("@/views/CheckFloorView.vue")
+                },{
+                    path: "reportHandle",
+                    component: () => import("@/views/CheckReportCommentView.vue")
                 }
             ]
         },{
