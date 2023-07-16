@@ -2,9 +2,7 @@
     <el-form>
 
         <el-form-item label="发布用户:">
-            <el-avatar :size="25" :src="report_info.author_portrait" ></el-avatar>
-                    
-            {{ report_info.author_name }}
+            <UserInfoCardSmall :avatar-url="report_info.author_portrait" :user-name="report_info.author_name" :user-id="report_info.author_id"></UserInfoCardSmall>
          </el-form-item>
 
          <el-form-item label="发布时间:">
@@ -12,9 +10,7 @@
         </el-form-item>
 
         <el-form-item label="举报用户:">
-            <el-avatar :size="25" :src="report_info.user_portrait" ></el-avatar>
-                    
-            {{ report_info.user_name }}
+            <UserInfoCardSmall :avatar-url="report_info.user_portrait" :user-name="report_info.user_name" :user-id="report_info.user_id"></UserInfoCardSmall>
          </el-form-item>
 
          <el-form-item label="举报时间">
@@ -22,7 +18,11 @@
         </el-form-item>
 
         <el-form-item label="所属帖子ID:" >
-            {{report_info.post_id}}
+            <div>
+                {{report_info.post_id}}
+            </div>
+
+            <GoToPostLink :floor_number="report_info.floor_number" :post_id="report_info.post_id"></GoToPostLink>
         </el-form-item>
 
         <el-form-item label="所属帖子标题:"  >
@@ -89,7 +89,10 @@
 <script>
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
+import GoToPostLink from "@/components/checkView/GoToPostLink.vue";
 export default{
+    components: {GoToPostLink, UserInfoCardSmall},
     props:["report_info","is_checked"],
     emits:['closeMe','refresh'],
     watch:

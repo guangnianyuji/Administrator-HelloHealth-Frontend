@@ -5,7 +5,7 @@
         </div>
     </div>
 
-    <div class="bodytable">
+    <div class="bodyTable">
     <el-tabs
         v-model="type_sort.type"
         
@@ -20,10 +20,7 @@
 
         <el-table-column label="发布用户" width="200" align="center">
             <template #default="scope">
-                <el-avatar :size="25" :src="scope.row.author_portrait" ></el-avatar>
-                    
-                {{ scope.row.author_name }}
-                     
+                <UserInfoCardSmall :avatar-url="scope.row.author_portrait" :user-name="scope.row.author_name" :user-id="scope.row.author_id"></UserInfoCardSmall>
             </template>
         </el-table-column>
 
@@ -37,10 +34,7 @@
 
         <el-table-column label="举报用户" width="200" align="center">
             <template #default="scope">
-                <el-avatar :size="25" :src="scope.row.user_portrait" ></el-avatar>
-                    
-                {{ scope.row.user_name }}
-                     
+                <UserInfoCardSmall :avatar-url="scope.row.user_portrait" :user-name="scope.row.user_name" :user-id="scope.row.user_id"></UserInfoCardSmall>
             </template>
         </el-table-column>
 
@@ -63,27 +57,8 @@
 
         <el-table-column  label="操作" align="center">
             <template #default="scope">
-            <div style="display: inline-block;" >
-            <button v-if="type_sort.type=='unchecked'" class="cssbuttons-io-button" @click="check(scope.row)"> 去处理
-                            <div class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                    <path fill="none" d="M0 0h24v24H0z"></path>
-                                    <path fill="currentColor"
-                                          d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"></path>
-                                </svg>
-                            </div>
-            </button>
-
-            <button v-else class="cssbuttons-io-button" @click="check(scope.row)"> 查看详情
-                            <div class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                    <path fill="none" d="M0 0h24v24H0z"></path>
-                                    <path fill="currentColor"
-                                          d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"></path>
-                                </svg>
-                            </div>
-            </button>   
-            </div>
+                <FancyButton v-if="type_sort.type==='unchecked'" @click="check(scope.row)"> 去处理</FancyButton>
+                <FancyButton v-else @click="check(scope.row)"> 查看详情</FancyButton>
             </template>
         </el-table-column>
        
@@ -109,10 +84,14 @@
 <script>
 import axios from "axios"; 
 import CheckReportCommentForm from "../components/checkView/CheckReportCommentForm.vue"
+import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
+import FancyButton from "@/components/FancyButton.vue";
 export default{
 
     components:
         {
+            FancyButton,
+            UserInfoCardSmall,
             CheckReportCommentForm
         },
     data:()=>({
@@ -191,10 +170,10 @@ export default{
     border-radius: 2px;
     transform: translate(-16px , -50%);
 }
-.bodytable{
-    margin-top:5% ;
-    margin-left: 10%;
-    margin-right: 10%;
+
+.bodyTable{
+    width: 85%;
+    margin: 5% auto 0 auto;
 }
 
 .container svg:hover {
@@ -203,59 +182,6 @@ export default{
 
 .container input:checked ~ svg {
     fill: RGB(253, 190, 45);
-}
-
-.cssbuttons-io-button {
-    background: RGB(0, 147, 191);
-    color: white;
-    font-family: inherit;
-    padding: 0em;
-    padding-left: 1em;
-    font-size: 13px;
-    font-weight: 400;
-    border-radius: 0.9em;
-    border: none;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    box-shadow: inset 0 0 1.6em -0.6em RGB(0, 147, 191);
-    overflow: hidden;
-    position: relative;
-    height: 2.8em;
-    padding-right: 3.1em;
-}
-
-.cssbuttons-io-button .icon {
-    background: white;
-    margin-left: 1em;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 2.2em;
-    width: 2.2em;
-    border-radius: 0.7em;
-    box-shadow: 0.1em 0.1em 0.6em 0.2em RGB(49,147, 191);
-    right: 0.3em;
-    transition: all 0.3s;
-}
-
-.cssbuttons-io-button:hover .icon {
-    width: calc(100% - 0.6em);
-}
-
-.cssbuttons-io-button .icon svg {
-    width: 1.1em;
-    transition: transform 0.3s;
-    color: RGB(49, 147, 191);
-}
-
-.cssbuttons-io-button:hover .icon svg {
-    transform: translateX(0.1em);
-}
-
-.cssbuttons-io-button:active .icon {
-    transform: scale(0.95);
 }
 
 </style>

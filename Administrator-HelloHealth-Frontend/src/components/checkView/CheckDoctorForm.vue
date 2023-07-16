@@ -2,9 +2,7 @@
     <el-form>
  
         <el-form-item label="申请用户:">
-            <el-avatar :size="25" :src="doctor_info.user_portrait" ></el-avatar>
-                    
-            {{ doctor_info.user_name }}
+            <UserInfoCardSmall :avatar-url="doctor_info.user_portrait" :user-name="doctor_info.user_name" :user-id="doctor_info.user_id"></UserInfoCardSmall>
          </el-form-item>
 
          <el-form-item label="申请时间">
@@ -77,7 +75,9 @@
 <script>
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
 export default{
+    components: {UserInfoCardSmall},
     props:["doctor_info","is_checked"],
     emits:['closeMe','refresh'],
     watch:

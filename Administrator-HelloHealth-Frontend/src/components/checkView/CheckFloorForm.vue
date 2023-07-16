@@ -2,9 +2,7 @@
     <el-form>
 
         <el-form-item label="发布用户:">
-            <el-avatar :size="25" :src="comment_info.author_portrait" ></el-avatar>
-                    
-            {{ comment_info.author_name }}
+            <UserInfoCardSmall :user-name="comment_info.author_name" :avatar-url="comment_info.author_portrait" :user-id="comment_info.author_id"></UserInfoCardSmall>
          </el-form-item>
 
          <el-form-item label="发布时间">
@@ -12,7 +10,10 @@
         </el-form-item>
 
         <el-form-item label="所属帖子ID:" v-model="check_info">
-            {{comment_info.post_id}}
+            <span>
+                {{comment_info.post_id}}
+            </span>
+            <GoToPostLink :floor_number="comment_info.floor_number" :post_id="comment_info.post_id"></GoToPostLink>
         </el-form-item>
 
         <el-form-item label="楼层所在层数:" v-model="check_info">
@@ -77,7 +78,11 @@
 <script>
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
+import GoToPostLink from "@/components/checkView/GoToPostLink.vue";
+
 export default{
+    components: {GoToPostLink, UserInfoCardSmall},
     props:["comment_info","is_checked"],
     emits:['closeMe','refresh'],
     watch:
