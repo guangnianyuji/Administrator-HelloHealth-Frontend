@@ -59,8 +59,19 @@
                         <button class="delete">
                             <span class="shadow"></span>
                             <span class="edge"></span>
-                            <span class="front text"> 删除</span>
+                            <span class="front text" @click="centerDialogVisible = true"> 删除</span>
                         </button>
+                        <el-dialog v-model="centerDialogVisible" title="警告" width="30%" center>
+                            <span style="margin-left: 40px">你确认要删除该药品信息吗? 此操作不可逆！</span>
+                            <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="centerDialogVisible = false">取消</el-button>
+        <el-button type="danger" @click="centerDialogVisible = false">
+          确认
+        </el-button>
+      </span>
+                            </template>
+                        </el-dialog>
                     </el-col>
                 </el-row>
             </el-card>
@@ -109,6 +120,8 @@
 <script>
 
 
+import {ref} from "vue";
+
 export default {
     name: "ManageMedicineView",
     data() {
@@ -121,6 +134,13 @@ export default {
         gotoModifyMedicinePage() {
             this.$router.replace('/ModifyMedicine');
         }
+    },
+    setup() {
+        const centerDialogVisible = ref(false)
+        return {
+            centerDialogVisible
+        }
+
     }
 }
 
