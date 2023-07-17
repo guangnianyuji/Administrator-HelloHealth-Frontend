@@ -47,6 +47,9 @@ const router = createRouter({
                 },{
                     path: "AddMedicine",
                     component: () => import("@/views/AddMedicine.vue"),
+                }, {
+                    path: "ModifyMedicine",
+                    component: () => import("@/views/ModifyMedicine.vue"),
                 },
             ]
         },{

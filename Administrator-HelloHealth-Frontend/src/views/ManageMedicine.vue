@@ -54,7 +54,7 @@
                         <button class="edit">
                             <span class="shadow"></span>
                             <span class="edit-edge"></span>
-                            <span class="edit-front text"> 编辑</span>
+                            <span class="edit-front text" @click="gotoModifyMedicinePage"> 编辑</span>
                         </button>
                         <button class="delete">
                             <span class="shadow"></span>
@@ -117,6 +117,9 @@ export default {
     methods: {
         gotoAddMedicinePage() {
             this.$router.replace('/AddMedicine');
+        },
+        gotoModifyMedicinePage() {
+            this.$router.replace('/ModifyMedicine');
         }
     }
 }
