@@ -104,7 +104,6 @@ export default{
     methods:
     {
         check(comment_info){
-            console.log(comment_info)
             axios.post("/api/Check/Floor/Detail",{comment_id:comment_info.comment_id})
             .then((res)=> {
                 comment_info.post_id=res.data.data.post_id; 
@@ -113,7 +112,6 @@ export default{
                 
             })
             .then(()=>{
-                console.log(comment_info);
                 this.selected_comment=comment_info;
                 this.checkDialogVisible=true;
             })
