@@ -41,6 +41,12 @@ const router = createRouter({
                 },{
                     path: "reportHandle",
                     component: () => import("@/views/CheckReportCommentView.vue")
+                },{
+                    path: "newsManagement",
+                    component: () => import ("@/components/ADHealthFlashEditor.vue")
+                },{
+                    path: "adminInfo",
+                    component: () => import("@/views/AdministratorInfoView.vue")
                 }
             ]
         },{
