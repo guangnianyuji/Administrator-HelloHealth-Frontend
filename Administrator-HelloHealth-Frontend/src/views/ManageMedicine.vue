@@ -14,12 +14,9 @@
                             <el-button type="primary">搜索</el-button>
                         </el-col>
                         <el-col :span="4">
-                            <el-button type="primary" @click="gotoAddMedicinePage">添加药品
-                                <svg t="1689567480448" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                                     xmlns="http://www.w3.org/2000/svg" p-id="4238" width="20" height="20">
-                                    <path d="M511.829333 975.725714C242.517333 975.725714 24.210286 757.369905 24.210286 488.106667 24.210286 218.794667 242.517333 0.487619 511.829333 0.487619 781.141333 0.487619 999.448381 218.794667 999.448381 488.106667 999.448381 757.369905 781.141333 975.725714 511.829333 975.725714ZM509.098667 91.428571C290.304 91.428571 120.56381 268.824381 120.56381 487.619048 120.56381 706.413714 290.304 877.714286 509.098667 877.714286 727.942095 877.714286 905.337905 706.413714 905.337905 487.619048 905.337905 268.824381 727.942095 91.428571 509.098667 91.428571ZM707.267048 536.380952C707.267048 536.380952 560.932571 536.380952 560.932571 536.380952 560.932571 536.380952 560.932571 682.715429 560.932571 682.715429 560.932571 709.632 539.136 731.428571 512.219429 731.428571 512.219429 731.428571 512.121905 731.428571 512.121905 731.428571 485.205333 731.428571 463.408762 709.632 463.408762 682.715429 463.408762 682.715429 463.408762 536.380952 463.408762 536.380952 463.408762 536.380952 317.074286 536.380952 317.074286 536.380952 290.157714 536.380952 268.361143 514.584381 268.361143 487.66781 268.361143 487.66781 268.361143 487.570286 268.361143 487.570286 268.361143 460.653714 290.157714 438.857143 317.074286 438.857143 317.074286 438.857143 463.408762 438.857143 463.408762 438.857143 463.408762 438.857143 463.408762 292.522667 463.408762 292.522667 463.408762 265.606095 485.205333 243.809524 512.121905 243.809524 512.121905 243.809524 512.219429 243.809524 512.219429 243.809524 539.136 243.809524 560.932571 265.606095 560.932571 292.522667 560.932571 292.522667 560.932571 438.857143 560.932571 438.857143 560.932571 438.857143 707.267048 438.857143 707.267048 438.857143 734.183619 438.857143 755.98019 460.653714 755.98019 487.570286 755.98019 487.570286 755.98019 487.66781 755.98019 487.66781 755.98019 514.584381 734.183619 536.380952 707.267048 536.380952Z"
-                                          fill="#ffffff" p-id="4239"></path>
-                                </svg>
+                            <el-button type="primary" @click="gotoAddMedicinePage">
+                                <span>添加药品</span>
+                                <i class="fi fi-rr-add centerIcon"></i>
                             </el-button>
                         </el-col>
                     </el-row>
@@ -51,12 +48,12 @@
                         <div class="content">适应症：高热 恶寒 肌肉酸痛 鼻塞 咳嗽 头痛 咽痛 流行性感冒 感冒</div>
                     </el-col>
                     <el-col :span="3">
-                        <button class="edit">
+                        <button class="edit fancy">
                             <span class="shadow"></span>
                             <span class="edit-edge"></span>
                             <span class="edit-front text" @click="gotoModifyMedicinePage"> 编辑</span>
                         </button>
-                        <button class="delete">
+                        <button class="delete fancy">
                             <span class="shadow"></span>
                             <span class="edge"></span>
                             <span class="front text" @click="centerDialogVisible = true"> 删除</span>
@@ -92,12 +89,12 @@
                         <div class="content">适应症：用于1月以上婴儿和儿童的急性腹泻，必要时给予口服补液或静脉补液</div>
                     </el-col>
                     <el-col :span="3">
-                        <button class="edit">
+                        <button class="edit fancy">
                             <span class="shadow"></span>
                             <span class="edit-edge"></span>
                             <span class="edit-front text"> 编辑</span>
                         </button>
-                        <button class="delete">
+                        <button class="delete fancy">
                             <span class="shadow"></span>
                             <span class="edge"></span>
                             <span class="front text"> 删除</span>
@@ -129,10 +126,10 @@ export default {
     },
     methods: {
         gotoAddMedicinePage() {
-            this.$router.replace('/AddMedicine');
+            this.$router.push('/AddMedicine');
         },
         gotoModifyMedicinePage() {
-            this.$router.replace('/ModifyMedicine');
+            this.$router.push('/ModifyMedicine');
         }
     },
     setup() {
@@ -146,11 +143,10 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 .MM_body {
-    margin: 0 auto;
+    margin: 20px auto;
     width: 90%;
-    margin-top: 20px;
 }
 
 .MM_title {
@@ -168,9 +164,6 @@ export default {
     height: 100%;
 }
 
-.icon {
-    margin-left: 5px;
-}
 
 .describe_text {
     margin-top: 30px;
@@ -194,7 +187,6 @@ export default {
 
 .M_title {
     font-size: 23px;
-    font-family: 等线;
     margin-top: 10px;
     margin-bottom: 20px;
     font-weight: bold;
@@ -204,7 +196,7 @@ export default {
     margin-top: 10px;
 }
 
-button {
+button.fancy {
     position: relative;
     border: none;
     background: transparent;
@@ -342,5 +334,19 @@ button:active .edit-front {
 
 .hover-card:hover {
     border: RGB(0, 147, 191) 0.15em solid;
+}
+
+.centerIcon{
+    margin: 0 0 0 5px;
+}
+
+@keyframes fly-1 {
+    from {
+        transform: translateY(0.1em);
+    }
+
+    to {
+        transform: translateY(-0.1em);
+    }
 }
 </style>

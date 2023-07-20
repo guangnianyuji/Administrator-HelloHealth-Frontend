@@ -240,10 +240,10 @@
                     <div class="input-hint">是否为处方药：</div>
                 </el-col>
                 <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入0/1。0代表不是处方药，1代表是处方药">
-                        <div class="highlight"></div>
-                    </div>
+                    <el-radio-group v-model="isPrescription" class="ml-4">
+                        <el-radio :label="true" size="large">是</el-radio>
+                        <el-radio :label="false" size="large">否</el-radio>
+                    </el-radio-group>
                 </el-col>
             </el-row>
 
@@ -252,10 +252,10 @@
                     <div class="input-hint">是否为医保药：</div>
                 </el-col>
                 <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入0/1。0代表不是医保药，1代表是医保药">
-                        <div class="highlight"></div>
-                    </div>
+                    <el-radio-group v-model="isInsurance" class="ml-4">
+                        <el-radio :label="true" size="large">是</el-radio>
+                        <el-radio :label="false" size="large">否</el-radio>
+                    </el-radio-group>
                 </el-col>
             </el-row>
 
@@ -273,15 +273,15 @@
 
             <el-row>
                 <button>
-                    <div class="svg-wrapper-1">
-                        <div class="svg-wrapper">
+                    <span class="svg-wrapper-1">
+                        <span class="svg-wrapper">
                             <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0z" fill="none"></path>
                                 <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" fill="currentColor"></path>
                             </svg>
-                        </div>
-                    </div>
-                    <span>提交</span>
+                        </span>
+                    </span>
+                    <span class="text">提交</span>
                 </button>
             </el-row>
         </el-card>
@@ -289,8 +289,20 @@
 </template>
 
 
-<script setup lang="ts">
+<script>
 import { UploadFilled } from '@element-plus/icons-vue'
+
+export default {
+    components: {
+      UploadFilled
+    },
+    data() {
+        return {
+            isPrescription: false,
+            isInsurance: false
+        }
+    }
+}
 
 </script>
 <!--<script>-->
@@ -306,7 +318,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 <!--    }-->
 <!--}-->
 <!--</script>-->
-<style>
+<style scoped>
 
 .AM_body {
     margin: 0 auto;
@@ -335,8 +347,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 }
 
 .AddMedicineFrame {
-    margin-top: 10px;
-    margin-left: 5%;
+    margin: 10px auto;
     width: 90%;
 }
 
@@ -414,16 +425,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
     animation: input-focus 0.3s ease;
 }
 
-.input-hint {
-    /*font-size: 20px;*/
-    /*font-family: 等线;*/
-    margin-top: 8px;
-    /*margin-right: 20px;*/
-    font-family: SimSun;
-    text-align: left;
-    font-size: 20px;
-    font-weight: 900;
-}
+
 .upload-demo{
     width: 75%;
 }
@@ -445,7 +447,7 @@ button {
     transition: all 0.2s;
 }
 
-button span {
+button span.text {
     display: block;
     margin-left: 0.3em;
     transition: all 0.3s ease-in-out;
@@ -465,7 +467,7 @@ button:hover svg {
     transform: translateX(1.2em) rotate(45deg) scale(1.1);
 }
 
-button:hover span {
+button:hover span.text {
     transform: translateX(5em);
 }
 

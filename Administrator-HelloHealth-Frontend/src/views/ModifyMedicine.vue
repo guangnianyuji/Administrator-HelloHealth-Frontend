@@ -253,11 +253,10 @@
                     <div class="input-hint">是否为处方药：</div>
                 </el-col>
                 <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input"
-                               placeholder="请输入0/1。0代表不是处方药，1代表是处方药">
-                        <div class="highlight"></div>
-                    </div>
+                    <el-radio-group v-model="isPrescription" class="ml-4">
+                        <el-radio :label="true" size="large">是</el-radio>
+                        <el-radio :label="false" size="large">否</el-radio>
+                    </el-radio-group>
                 </el-col>
             </el-row>
 
@@ -266,11 +265,10 @@
                     <div class="input-hint">是否为医保药：</div>
                 </el-col>
                 <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input"
-                               placeholder="请输入0/1。0代表不是医保药，1代表是医保药">
-                        <div class="highlight"></div>
-                    </div>
+                    <el-radio-group v-model="isInsurance" class="ml-4">
+                        <el-radio :label="true" size="large">是</el-radio>
+                        <el-radio :label="false" size="large">否</el-radio>
+                    </el-radio-group>
                 </el-col>
             </el-row>
 
@@ -286,6 +284,19 @@
                 </el-col>
             </el-row>
 
+            <el-row>
+                <button class="submitButton">
+                    <span class="svg-wrapper-1">
+                        <span class="svg-wrapper">
+                            <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" fill="currentColor"></path>
+                            </svg>
+                        </span>
+                    </span>
+                    <span class="text">提交</span>
+                </button>
+            </el-row>
 
         </el-card>
     </div>
@@ -294,11 +305,16 @@
 
 <script>
 import { ref } from 'vue'
+import {UploadFilled} from "@element-plus/icons-vue";
 
 export default {
     name: "AddMedicineView",
+    components: {UploadFilled},
     data() {
-        return {}
+        return {
+            isPrescription: false,
+            isInsurance: false
+        }
     },
     setup() {
         const centerDialogVisible = ref(false)
@@ -311,7 +327,7 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
 
 .AM_body {
     margin: 0 auto;
@@ -340,8 +356,7 @@ export default {
 }
 
 .AddMedicineFrame {
-    margin-top: 10px;
-    margin-left: 5%;
+    margin: 10px auto;
     width: 90%;
 }
 
@@ -419,8 +434,7 @@ export default {
 }
 
 .input-hint {
-//margin-top: 8px; font-family: SimSun; text-align: left; font-size: 20px;
-    font-weight: 900;
+
 }
 
 .upload-demo {
@@ -432,5 +446,51 @@ export default {
 }
 .dialog-footer button:first-child {
     margin-right: 10px;
+}
+
+button.submitButton {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    margin-left: 45%;
+    font-family: inherit;
+    font-size: 20px;
+    background: #019ccb;
+    color: white;
+    padding: 0.5em 1em;
+    padding-left: 0.9em;
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+button.submitButton span.text {
+    display: block;
+    margin-left: 0.3em;
+    transition: all 0.3s ease-in-out;
+}
+
+button.submitButton svg {
+    display: block;
+    transform-origin: center center;
+    transition: transform 0.3s ease-in-out;
+}
+
+button.submitButton:hover .svg-wrapper {
+    animation: fly-1 0.6s ease-in-out infinite alternate;
+}
+
+button.submitButton:hover svg {
+    transform: translateX(1.2em) rotate(45deg) scale(1.1);
+}
+
+button.submitButton:hover span.text {
+    transform: translateX(5em);
+}
+
+button.submitButton:active {
+    transform: scale(0.95);
 }
 </style>
