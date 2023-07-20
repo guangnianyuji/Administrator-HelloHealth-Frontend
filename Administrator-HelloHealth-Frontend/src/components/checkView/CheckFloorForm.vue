@@ -13,7 +13,6 @@
             <span>
                 {{comment_info.post_id}}
             </span>
-            <GoToPostLink :floor_number="comment_info.floor_number" :post_id="comment_info.post_id"></GoToPostLink>
         </el-form-item>
 
         <el-form-item label="楼层所在层数:" v-model="check_info">
