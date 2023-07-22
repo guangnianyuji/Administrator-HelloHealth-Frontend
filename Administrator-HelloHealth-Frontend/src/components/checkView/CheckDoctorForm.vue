@@ -76,7 +76,7 @@
   
     </el-form>
 
-        <span class="dialog-footer" v-if="!is_checked">
+        <span style="margin-left: 40%;" v-if="!is_checked">
             <el-button @click="cancel">取消</el-button>
             <el-button @click="submit">提交
                 <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -90,9 +90,6 @@
 </template>
 
 <style scoped>
-.dialog-footer button:first-child {
-  margin-right: 10px;
-}
 .input {
     font-size: 1em;
     width: 70%;

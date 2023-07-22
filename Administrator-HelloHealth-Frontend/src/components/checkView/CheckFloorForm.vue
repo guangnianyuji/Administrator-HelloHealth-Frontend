@@ -61,7 +61,8 @@
   
     </el-form>
 
-        <div  v-if="!is_checked">
+        <div  v-if="!is_checked" style="margin-left: 40%;">
+             
             <el-button size="large" @click="cancel">
                 取消
                 
@@ -73,6 +74,7 @@
                             </svg>       
             
             </el-button>
+            
         </div>
  
 
