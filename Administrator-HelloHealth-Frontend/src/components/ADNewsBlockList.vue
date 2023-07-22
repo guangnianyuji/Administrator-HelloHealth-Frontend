@@ -90,7 +90,20 @@ export default {
             this.newsList = res.data.data.newsList;    // 获取全部新闻列表
             this.total = this.newsList.length;         // 总新闻数
           })
-    }
+    },
+    addNews(newNews) {
+      this.newsList.push(newNews);
+      this.total = this.newsList.length;
+    },
+    updateNews(newNews) {
+      // 在 newsList 中找到相同 id 的新闻，然后进行更新
+      for (let i = 0; i < this.newsList.length; i++) {
+        if (this.newsList[i].id === newNews.id) {
+          this.newsList[i] = newNews;
+          break;
+        }
+      }
+    },
   },
   mounted() {  // mounted 时获取全部新闻列表
     this.getNewsList()

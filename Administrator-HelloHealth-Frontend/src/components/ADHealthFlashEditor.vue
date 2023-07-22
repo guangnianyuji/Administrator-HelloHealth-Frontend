@@ -1,5 +1,5 @@
 <!--
-管理员页面的新闻编辑 admin/edit
+管理员页面的新闻编辑
 复用了Post中的dialog
 -->
 <template>
@@ -17,7 +17,8 @@
     </el-aside>
     <el-main>
       <!-- 资讯页面中间大块的新闻预览 -->
-      <ADNewsBlockList :selected-tag-id="selectedTagId" @edit="handleEdit"/>
+      <ADNewsBlockList :selected-tag-id="selectedTagId" @edit="handleEdit"
+                       ref="newsBlockListInstance"/>
       <!-- :selected-tag-id对应NewsBlockList的props中的selectedTagId -->
     </el-main>
   </el-container>
@@ -49,12 +50,12 @@
               v-for="tag in this.tags"
               :key="tag.tag_id"
               :label="tag.tag_name"
-              :value="tag.tag_id"
+              :value="tag.tag_name"
           />
         </el-select>
       </el-form-item>
     </el-form>
-    <TipTapEditable ref="editor"/>
+    <TipTapEditable ref="editor" />
     <template #footer>
             <span class="dialog-footer">
                 <el-button type="primary" @click="submitNewFlash">
@@ -71,7 +72,6 @@
 <script>
 import {defineComponent} from 'vue'
 import ADNewsBlockList from "@/components/ADNewsBlockList.vue";
-import WritePostButton from "@/components/postBoardView/WritePostButton.vue";
 import NewsBlockList from "@/components/NewsBlockList.vue";
 import NewsTagSelector from "@/components/NewsTagSelector.vue";
 import TipTapEditable from "@/components/postView/TipTapEditable.vue";
@@ -97,6 +97,12 @@ export default defineComponent({
   methods: {
     onCreateFlash(){
       this.dialogVisible=true;
+      this.newFlashInfo = {
+        flash_being_edited_id: -1,
+        title:"",
+        content: "",
+        tags: []
+      };
     },
     handleTagSelected(tagId) {
       this.selectedTagId = tagId;
@@ -124,7 +130,8 @@ export default defineComponent({
         return;
       }
       this.newFlashInfo.content = JSON.stringify(this.$refs.editor.editor.getJSON())
-      let response = await axios.post("/api/sendFlash",this.newFlashInfo)
+      console.log(this.newFlashInfo.content)
+      let response = await axios.post("https://mock.apifox.cn/m1/2961538-0-default/api/sendFlash",this.newFlashInfo)
       let responseObj = response.data;
       if(responseObj.errorCode!==200) {
         ElMessage.error('发送失败，错误码：' + responseObj.errorCode);
@@ -137,13 +144,45 @@ export default defineComponent({
       ElMessage.success('发送成功。');
       this.dialogVisible = false;
       this.$refs.editor.editor.commands.clearContent();
-      this.newFlashInfo = {
-        flash_being_edited_id:-1,
-        title:"",
-        content: "",
-        tags: []
+
+      const newNews = {
+        id: this.newFlashInfo.flash_being_edited_id,
+        image: this.getCoverImageUrl(this.newFlashInfo.content),
+        title: this.newFlashInfo.title,
+        content: this.getContentText(this.newFlashInfo.content),
+        tags: this.newFlashInfo.tags,
+      };
+
+      if (newNews.id === -1) {
+        // 如果是新建新闻，调用 addNews
+        this.$refs.newsBlockListInstance.addNews(newNews);
+      } else {
+        // 如果是编辑新闻，调用 updateNews
+        this.$refs.newsBlockListInstance.updateNews(newNews);
       }
-    }
+    },
+    getCoverImageUrl(contentJson) {
+      contentJson = JSON.parse(contentJson);
+      if (contentJson && Array.isArray(contentJson.content)) {
+        for (const contentObj of contentJson.content) {
+          if (contentObj.type === 'image') {
+            return contentObj.attrs.src;
+          }
+        }
+      }
+      return '';
+    },
+    getContentText(contentJson) {
+      contentJson = JSON.parse(contentJson);
+      if (contentJson && Array.isArray(contentJson.content)) {
+        for (const contentObj of contentJson.content) {
+          if (contentObj.type === 'paragraph') {
+            return contentObj.content[0].text;
+          }
+        }
+      }
+      return '';
+    },
   },
   mounted() { // mounted 时获取全部标签列表
     axios.get("https://mock.apifox.cn/m1/2961538-0-default/api/childTags")

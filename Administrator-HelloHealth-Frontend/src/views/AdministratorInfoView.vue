@@ -101,7 +101,7 @@
       <el-card class="cardStyle">
         <el-descriptions
             class="margin-top"
-            title="我发布的新闻"
+            title="发布的新闻"
             :column="3"
             :size="size"
             border
