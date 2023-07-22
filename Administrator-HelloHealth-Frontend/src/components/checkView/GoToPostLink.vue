@@ -10,8 +10,9 @@ const goOriginPost = () => {
 </script>
 
 <template>
-    <el-button class="visitPostButton" link @click="goOriginPost">
-        <span class="iconWrapper"><span>查看原帖</span> <i class="fi fi-rr-angle-small-right arrow centerIcon"></i></span>
+    <el-button class="visitPostButton" round @click="goOriginPost">
+        <span class="iconWrapper"><span>查看原帖</span>
+         <i class="fi fi-rr-angle-small-right arrow centerIcon"></i></span>
     </el-button>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-    <el-form>
+    <el-form label-width="auto">
 
         <el-form-item label="发布用户:">
             <UserInfoCardSmall :avatar-url="report_info.author_portrait" :user-name="report_info.author_name" :user-id="report_info.author_id"></UserInfoCardSmall>
@@ -13,7 +13,7 @@
             <UserInfoCardSmall :avatar-url="report_info.user_portrait" :user-name="report_info.user_name" :user-id="report_info.user_id"></UserInfoCardSmall>
          </el-form-item>
 
-         <el-form-item label="举报时间">
+         <el-form-item label="举报时间:">
             {{ report_info.report_time }}
         </el-form-item>
 
@@ -73,7 +73,12 @@
 
         <span class="dialog-footer" v-if="!is_checked">
             <el-button @click="cancel">取消</el-button>
-            <el-button @click="submit">提交</el-button>
+            <el-button @click="submit">提交
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" fill="currentColor"></path>
+                            </svg>    
+            </el-button>
         </span>
  
 
