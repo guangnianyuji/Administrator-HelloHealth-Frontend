@@ -45,7 +45,12 @@ const router = createRouter({
                     path: "newsManagement",
                     component: () => import ("@/views/FlashEditorView.vue")
                 },{
-                    path: "adminInfo",
+                    path: "adminiInfo",
+                    name: "myView",
+                    component: () => import("@/views/AdministratorInfoView.vue")
+                },{
+                    path: "adminiInfo/:administratorID",
+                    name: "otherView",
                     component: () => import("@/views/AdministratorInfoView.vue")
                 }
             ]
