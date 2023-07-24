@@ -1,9 +1,19 @@
 <template>
-    <div class="title">
-        <div class="forum-title title-with-line" >
-            审核专业医生认证
+<div class="title">
+        <el-row>
+            <el-col :span="15">
+            <div class="forum-title title-with-line" >
+                审核专业医生认证
+            </div>
+     
+         </el-col>
+
+            <el-col :span="4">
+                <img src="../assets/8.png "  style="height: 150px">
+            </el-col>
+        
+            </el-row>
         </div>
-    </div>
 
     <div class="bodyTable">
     <el-tabs
@@ -32,7 +42,13 @@
             </template>
         </el-table-column>
 
-        <el-table-column v-if="type_sort.type=='checked'" width="200" label="审核结果" align="center">
+        <el-table-column v-if="type_sort.type=='checked'" width="200" label="审核管理员ID" align="center">
+            <template #default="scope">
+                {{ scope.row.administrator_id }}
+            </template>
+        </el-table-column>
+
+        <el-table-column v-if="type_sort.type=='checked'" width="200" label="审核结果及时间" align="center">
             <template #default="scope">
                  <div v-if="scope.row.review_status=='1'" style="color: #118407a5;">
                     通过
@@ -45,11 +61,7 @@
                 </div>
             </template>
         </el-table-column>
-        <el-table-column v-if="type_sort.type=='checked'" width="200" label="审核管理员ID" align="center">
-            <template #default="scope">
-                {{ scope.row.administrator_id }}
-            </template>
-        </el-table-column>
+        
     
         
         <el-table-column  label="操作" align="center">
@@ -71,6 +83,7 @@
         title="审核专业医生认证"
         width="70%"
         top="0"
+        class="checkform"
     >
         <CheckDoctorForm :doctor_info="selected_doctor" :is_checked="type_sort.type=='checked'" @refresh="display" @close-me="checkDialogVisible=false"/>
     </el-dialog>
@@ -106,7 +119,7 @@ export default{
                 doctor_info.certification=res.data.data.certification;    
                 doctor_info.license=res.data.data.license; 
                 doctor_info.title=res.data.data.title; 
-                doctor_info.hospital=res.data.data.hospital; 
+                doctor_info.department=res.data.data.department; 
                 doctor_info.hospital_rank=res.data.data.hospital_rank; 
                  
             })
@@ -148,9 +161,10 @@ export default{
 
 
 .title {
-   font-size: xx-large;
+    font-size: xx-large;
    margin-left: 10%;
    margin-top:5%;
+   font-weight: bold;
 }
 
 .forum-title {

@@ -1,10 +1,19 @@
 <template>
     <div class="title">
-        <div class="forum-title title-with-line" >
+        <el-row>
+            <el-col :span="15">
+            <div class="forum-title title-with-line" >
             审核论坛楼层发布
-        </div>
-    </div>
+            </div>
+     
+         </el-col>
 
+            <el-col :span="4">
+                <img src="../assets/8.png "  style="height: 150px">
+            </el-col>
+        
+            </el-row>
+        </div>
     <div class="bodyTable">
     <el-tabs
         v-model="type_sort.type"
@@ -74,6 +83,7 @@
         title="审核楼层发表"
         width="70%"
         top="0"
+        class="checkform"
     >
         <CheckFloorForm :comment_info="selected_comment" :is_checked="type_sort.type=='checked'" @refresh="display" @close-me="checkDialogVisible=false"/>
     </el-dialog>
@@ -154,10 +164,12 @@ export default{
 
 
 <style scoped>
+
 .title {
    font-size: xx-large;
    margin-left: 10%;
    margin-top:5%;
+   font-weight: bold;
 }
 
 .forum-title {
