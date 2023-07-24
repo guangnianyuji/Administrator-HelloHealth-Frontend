@@ -3,34 +3,43 @@
 复用了Post中的dialog
 -->
 <template>
-  <div>新建新闻</div>
-  <el-container shadow="hover" class="news-block">
-    <el-card class="new-card clickable" @click="onCreateFlash">
-      <i class="fi fi-br-plus"></i>
-    </el-card>
-  </el-container>
-  <div>已发布新闻</div>
-  <el-container>
-    <el-aside>
-      <!-- 标签选择器 -->
-      <NewsTagSelector @tag-selected="handleTagSelected" />
-    </el-aside>
-    <el-main>
+  <div class="view-wrapper">
+    <div class="title">
+        <div class="forum-title title-with-line" >
+          新建资讯
+        </div>
+    </div>
+    <el-container shadow="hover" class="news-block">
+      <el-card class="new-card clickable" @click="onCreateFlash">
+        <i class="fi fi-br-plus"></i>
+      </el-card>
+    </el-container>
+    <div class="title">
+        <div class="forum-title title-with-line" >
+          管理资讯
+        </div>
+    </div>
+    <div class="manage-wrapper">
+      <div class="left">
+        <!-- 标签选择器 -->
+        <NewsTagSelector @tag-selected="handleTagSelected" style="width: min-content;"/>
+      </div>
+    <div class="right">
       <!-- 资讯页面中间大块的新闻预览 -->
       <ADNewsBlockList :selected-tag-id="selectedTagId" @edit="handleEdit"
                        ref="newsBlockListInstance"/>
       <!-- :selected-tag-id对应NewsBlockList的props中的selectedTagId -->
-    </el-main>
-  </el-container>
+      </div>
+    </div>
 
-  <el-dialog
+    <el-dialog
       v-model="dialogVisible"
       class="editorDialog"
       modal-class="editorDialogModal"
       title="发布资讯"
       width="70%"
       top="0"
-  >
+    >
     <el-form label-width="50px" label-position="left" :model="newFlashInfo">
       <el-form-item label="标题">
         <el-input v-model="newFlashInfo.title" />
@@ -54,16 +63,21 @@
           />
         </el-select>
       </el-form-item>
-    </el-form>
-    <TipTapEditable ref="editor" />
-    <template #footer>
+      <el-form-item label="简介">
+        <el-input v-model="newFlashInfo.introduction" />
+      </el-form-item>
+      </el-form>
+      <TipTapEditable ref="editor" />
+      <template #footer>
             <span class="dialog-footer">
                 <el-button type="primary" @click="submitNewFlash">
                     发布
                 </el-button>
             </span>
-    </template>
-  </el-dialog>
+      </template>
+    </el-dialog>
+  </div>
+  
 
 
 </template>
@@ -79,7 +93,7 @@ import {ElMessage} from "element-plus";
 import axios from "axios";
 
 export default defineComponent({
-  name: "HealthFlashEditor",
+  name: "FlashEditorView",
   components: {TipTapEditable, NewsTagSelector, NewsBlockList, ADNewsBlockList},
   data() {
     return {
@@ -88,6 +102,7 @@ export default defineComponent({
       newFlashInfo: {
         flash_being_edited_id: -1,
         title:"",
+        introduction:"",
         content: "",
         tags: []
       },
@@ -197,15 +212,61 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.view-wrapper{
+  margin-left: 5%;
+
+}
+.title {
+   font-size: 30px;
+   margin-left: 5%;
+   margin-top:3%;
+}
+
+.forum-title {
+    position: relative;
+}
+
+.title-with-line:before{
+    content:"";
+    top:50%;
+    width: 1px;
+    height: 1.2em;
+    display: inline-block;
+    position: absolute;
+    background-color: var(--el-color-primary);
+    border: 1px solid var(--el-color-primary);
+    border-radius: 2px;
+    transform: translate(-16px , -50%);
+}
 .news-block {
   display: flex;
-  justify-content: center;
+  justify-content: left;
+  margin-top: 3%;
+  margin-left: 3%;
 }
 .new-card {
-  height: 100px;
-  width: 600px;
+  height: 130px;
+  width: 950px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.manage-wrapper{
+  width:fit-content;
+  display: flex;
+  flex-direction: row;
+}
+
+.manage-wrapper .left{
+  padding-top: 1%;
+  padding-left: 5%;
+  width: auto;
+  padding-right: 0%;
+}
+.manage-wrapper .right{
+  padding-top: 0%;
+  margin-left: 4%;
+  width:auto;
 }
 </style>

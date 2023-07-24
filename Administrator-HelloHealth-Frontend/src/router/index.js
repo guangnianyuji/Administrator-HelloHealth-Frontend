@@ -43,7 +43,7 @@ const router = createRouter({
                     component: () => import("@/views/CheckReportCommentView.vue")
                 },{
                     path: "newsManagement",
-                    component: () => import ("@/components/ADHealthFlashEditor.vue")
+                    component: () => import ("@/views/FlashEditorView.vue")
                 },{
                     path: "adminInfo",
                     component: () => import("@/views/AdministratorInfoView.vue")
