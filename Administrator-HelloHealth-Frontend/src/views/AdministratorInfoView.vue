@@ -137,7 +137,7 @@ export default {
   mounted() {
     // 从后端API获取医师认证信息
     //TODO 这个地方应该用团队里面的api
-    axios.get("https://mock.apifox.cn/m1/2961538-0-default/api/getUserIfo")
+    axios.post('/api/AdministratorInfo/Details')
         .then(response => {
           const responseData = response.data.data.administrator;
           this.administrator = responseData
