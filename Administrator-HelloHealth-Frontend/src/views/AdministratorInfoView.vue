@@ -118,6 +118,7 @@
 </template>
 
 <script>
+import { ElMessage } from "element-plus";
 import axios from "axios"
 import NewsBlockList from "@/components/NewsBlockList.vue";
 export default {
@@ -180,12 +181,33 @@ export default {
     save(){
       // 将修改后的管理员信息保存到数据库
       axios
-          .put('http://127.0.0.1:4523/m2/2961538-0-default/95495428', {
-            administrator: this.administrator,
-          })
+          .put('/api/modifyAdministratorInfo')
           .then(response => {
             // 保存成功后将isEdit变量设置为false，禁用编辑模式
             this.isEdit = false;
+                let user_info={
+                  //工号，名称，联系方式，邮箱
+                  id:this.administrator.id,
+                  name :this.UserInfo.userName,
+                  email:this.administrator.email,
+                  telephone:this.administrator0.telephone,
+                };
+                if(response.data.data.status == true){
+                  ElMessage({
+                    type: "success",
+                    message: "修改成功！",
+                    duration: 2000,
+                    showClose: true,
+                  });
+                  //store.commit("changePersonInfo", user_info);
+                } else {
+                  ElMessage({
+                    type: "error",
+                    message: "修改失败！",
+                    duration: 2000,
+                    showClose: true,
+                  });
+                }
           })
           .catch((error) => {
             this.isEdit = false;
