@@ -97,7 +97,7 @@ export default {
         type: 'warning'
       }).then(() => {
         // 确定删除
-        axios.delete('https://mock.apifox.cn/m1/2961538-0-default/api/news/delete/${this.flash_id}')
+        axios.delete('/api/news/delete/${this.flash_id}')
             .then(res => {
               this.$emit('delete', this.flash_id)
             });

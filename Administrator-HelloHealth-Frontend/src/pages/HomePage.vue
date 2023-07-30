@@ -45,7 +45,7 @@ const avatarClicked = () =>{
 }
 
 const menus = [
-    {"title":"个人信息","icon":"fi-rr-user-gear","path":"/"},
+    {"title":"个人信息","icon":"fi-rr-user-gear","path":"/adminiInfo"},
     {
         "title":"审核","icon":"fi-rr-memo-circle-check","path":"censorSubMenu",
         "children":[

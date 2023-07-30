@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     goFullContent() {
-      this.$router.push("/news/"+this.$props.flash_id);
+      this.$router.push("/api/getNewsById/"+this.$props.flash_id);
     },
   }
 }

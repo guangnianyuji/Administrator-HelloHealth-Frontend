@@ -4,16 +4,17 @@
 -->
 <template>
   <div class="view-wrapper">
-    <div class="title">
-        <div class="forum-title title-with-line" >
-          新建资讯
-        </div>
-    </div>
-    <el-container shadow="hover" class="news-block">
-      <el-card class="new-card clickable" @click="onCreateFlash">
-        <i class="fi fi-br-plus"></i>
-      </el-card>
-    </el-container>
+<!--    <div class="title">-->
+<!--        <div class="forum-title title-with-line" >-->
+<!--          新建资讯-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <el-container shadow="hover" class="news-block">-->
+<!--      <el-card class="new-card clickable" @click="onCreateFlash">-->
+<!--        <i class="fi fi-br-plus"></i>-->
+<!--      </el-card>-->
+<!--    </el-container>-->
+    <WritePostButton @click="onCreateFlash"></WritePostButton>
     <div class="title">
         <div class="forum-title title-with-line" >
           管理资讯
@@ -63,9 +64,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="简介">
-        <el-input v-model="newFlashInfo.introduction" />
-      </el-form-item>
       </el-form>
       <TipTapEditable ref="editor" />
       <template #footer>
@@ -91,10 +89,11 @@ import NewsTagSelector from "@/components/NewsTagSelector.vue";
 import TipTapEditable from "@/components/postView/TipTapEditable.vue";
 import {ElMessage} from "element-plus";
 import axios from "axios";
+import WritePostButton from "@/components/postBoardView/WritePostButton.vue";
 
 export default defineComponent({
   name: "FlashEditorView",
-  components: {TipTapEditable, NewsTagSelector, NewsBlockList, ADNewsBlockList},
+  components: {WritePostButton, TipTapEditable, NewsTagSelector, NewsBlockList, ADNewsBlockList},
   data() {
     return {
       selectedTagId: null,
@@ -130,6 +129,10 @@ export default defineComponent({
         content: content,
         tags: tags
       };
+      // 一旦对话框打开，直接设置内容
+      this.$nextTick(() => {
+        this.$refs.editor.editor.commands.setContent(content);
+      });
     },
     async submitNewFlash() {
       if(this.$refs.editor.editor.state.doc.textContent.length < 15) {
@@ -146,7 +149,7 @@ export default defineComponent({
       }
       this.newFlashInfo.content = JSON.stringify(this.$refs.editor.editor.getJSON())
       console.log(this.newFlashInfo.content)
-      let response = await axios.post("https://mock.apifox.cn/m1/2961538-0-default/api/sendFlash",this.newFlashInfo)
+      let response = await axios.post("/api/sendFlash",this.newFlashInfo)
       let responseObj = response.data;
       if(responseObj.errorCode!==200) {
         ElMessage.error('发送失败，错误码：' + responseObj.errorCode);
