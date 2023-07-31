@@ -39,6 +39,9 @@ const router = createRouter({
                     path: "forumCensor",
                     component: () => import("@/views/CheckFloorView.vue")
                 },{
+                    path: "medicineManagement",
+                    component: () => import("@/views/ManageMedicine.vue"),
+                }, {
                     path: "reportHandle",
                     component: () => import("@/views/CheckReportCommentView.vue")
                 },{

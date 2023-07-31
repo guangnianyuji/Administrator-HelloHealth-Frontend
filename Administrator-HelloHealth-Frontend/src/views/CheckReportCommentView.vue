@@ -74,6 +74,7 @@
         title="处理论坛举报"
         width="70%"
         top="0"
+        class="checkform"
     >
         <CheckReportCommentForm :report_info="selected_report" :is_checked="type_sort.type=='checked'" @refresh="display" @close-me="checkDialogVisible=false"/>
     </el-dialog>

@@ -1,11 +1,11 @@
 <template>
-    <el-form>
+    <el-form label-width="auto" :model="check_info" :rules="doctorrule" ref="doctorform">
  
         <el-form-item label="申请用户:">
             <UserInfoCardSmall :avatar-url="doctor_info.user_portrait" :user-name="doctor_info.user_name" :user-id="doctor_info.user_id"></UserInfoCardSmall>
          </el-form-item>
 
-         <el-form-item label="申请时间">
+         <el-form-item label="申请时间:">
             {{ doctor_info.submit_date }}
         </el-form-item>
           
@@ -15,18 +15,37 @@
          <el-form-item label="执业医师执业证:">
             <img :src="doctor_info.license">
          </el-form-item>
-         <el-form-item label="医生职称:">
+
+         <el-form-item v-if="is_checked" label="医生职称:">
             {{doctor_info.title}}
              
          </el-form-item>
-         <el-form-item label="医生所在医院:">
-            {{doctor_info.hospital}}
+
+         <el-form-item v-if="!is_checked" label="医生职称:" 
+         prop="doctor_title">
+            <el-input v-model="check_info.doctor_title" class="input" placeholder="请输入医生职称"/>    
+         </el-form-item> 
+
+         <el-form-item v-if="is_checked" label="医生所属科室:">
+            {{doctor_info.department}}
              
          </el-form-item>
-         <el-form-item label="医生所在医院级别:">
+
+         <el-form-item v-if="!is_checked" label="医生所属科室:"
+         prop="doctor_department">
+            <el-input v-model="check_info.doctor_department" class="input" placeholder="请输入医生所属科室"/>    
+         </el-form-item> 
+
+
+         <el-form-item v-if="is_checked" label="医生所在医院级别:">
             {{doctor_info.hospital_rank}}
              
          </el-form-item>
+
+         <el-form-item v-if="!is_checked" label="医生所在医院级别:"
+         prop="doctor_hospital_rank">
+            <el-input v-model="check_info.doctor_hospital_rank" class="input" placeholder="请输入医生所在医院级别"/>    
+         </el-form-item> 
 
          <el-form-item v-if="!is_checked" label="是否通过:">
                 <el-radio-group v-model="check_info.is_passed">
@@ -43,7 +62,7 @@
 
          
         <el-form-item  v-if="!is_checked" label="审核原因:">
-            <el-input v-model="check_info.reason" />
+            <el-input v-model="check_info.reason" class="input" placeholder="若不通过，请输入原因"/>
         </el-form-item>
      
         <el-form-item  v-if="is_checked" label="审核时间:">
@@ -57,24 +76,51 @@
   
     </el-form>
 
-        <span class="dialog-footer" v-if="!is_checked">
+        <span style="margin-left: 40%;" v-if="!is_checked">
             <el-button @click="cancel">取消</el-button>
-            <el-button @click="submit">提交</el-button>
+            <el-button @click="submit">提交
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" fill="currentColor"></path>
+                            </svg>     
+            </el-button>
         </span>
  
 
 </template>
 
 <style scoped>
-.dialog-footer button:first-child {
-  margin-right: 10px;
+.input {
+    font-size: 1em;
+    width: 70%;
+    padding: 0.6em 1em;
+    border: none;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
 }
- 
+
+.input:hover {
+    background-color: #f2f2f2;
+}
+
+.input:focus {
+    outline: none;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.input::placeholder {
+    color: #999;
+}
 </style>
 
 <script>
 import axios from "axios";
 import {ElMessage} from "element-plus";
+
 import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
 export default{
     components: {UserInfoCardSmall},
@@ -84,23 +130,50 @@ export default{
         {
             doctor_info:function(newData)
             {
-                this.check_info.post_id=newData.post_id;
+                this.check_info.doctor_id=newData.doctor_id;
                 this.check_info.user_id=newData.user_id;
             
             },
            
         },
     data:()=>({
-        
+       
+        doctorrule:{
+            doctor_title:[
+                {required:true,message:'医生职称不能为空',trigger:'blur'},
+            ],
+            doctor_department:[
+                {required:true,message:'医生所属科室不能为空',trigger:'blur'},
+            ],
+            doctor_hospital_rank:[
+                {required:true,message:'医生所在医院等级不能为空',trigger:'blur'},
+            ],
+        },
         check_info:{
             doctor_id:0,
             user_id:0,
             is_passed:true,
-            reason:""
+            reason:"",
+            doctor_title:"",
+            doctor_department:"",
+            doctor_hospital_rank:""
         },
     }),
     methods:{
+        checkForm() {
+            let ok=false;
+            this.$refs.doctorform.validate(valid=>(ok=valid));
+            return ok;
+        },
+
         submit(){
+            if(this.check_info.is_passed){
+                if(!this.checkForm()){
+            ElMessage.error('请完善表单相关信息！');
+            return;
+           }
+            }
+            
 
             axios.post("/api/Check/Doctor/Submit",this.check_info)
             .then((res)=> {
@@ -118,7 +191,9 @@ export default{
             ElMessage.success('审核信息发送成功。')
             this.$emit('closeMe'); 
             this.$emit('refresh'); 
-        });
+        }
+        
+        );
             
         },
         cancel(){
