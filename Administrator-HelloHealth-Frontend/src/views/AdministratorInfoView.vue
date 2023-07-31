@@ -9,26 +9,28 @@
             <el-aside>
               <div class="avatar-container">
                 <el-avatar class="avatar" :src="isAdministrator ? 'administrator.portrait' : null"></el-avatar>
-                <el-button class="pic-edit-button" type="primary" icon="el-icon-edit" @click="showPhotoUpload">Edit</el-button>
-                <el-dialog v-model="photoUpload" title="头像上传" width="50%">
-                  <div style="text-align: center;">
-                    <p>请上传头像</p>
-                    <el-upload
-                        class="upload-demo"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :auto-upload="false"
-                        :on-change="handleChange"
-                        accept="image/jpg,image/jpeg,image/png,image/gif"
-                    >
-                      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                      <div slot="tip" class="el-upload__tip">上传文件格式为.jpg、.jpeg、.png、.gif，且不超过 2MB</div>
-                    </el-upload>
-                  </div>
-                  <div slot="footer" class="dialog-footer">
-                    <el-button @click="photoUpload = false">取 消</el-button>
-                    <el-button type="primary" @click="submitPhoto">确 定</el-button>
-                  </div>
-                </el-dialog>
+                <template v-if="isCurrentAdministrator">
+                  <el-button class="pic-edit-button" type="primary" icon="el-icon-edit" @click="showPhotoUpload">Edit</el-button>
+                  <el-dialog v-model="photoUpload" title="头像上传" width="50%">
+                    <div style="text-align: center;">
+                      <p>请上传头像</p>
+                      <el-upload
+                          class="upload-demo"
+                          action="https://jsonplaceholder.typicode.com/posts/"
+                          :auto-upload="false"
+                          :on-change="handleChange"
+                          accept="image/jpg,image/jpeg,image/png,image/gif"
+                      >
+                        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                        <div slot="tip" class="el-upload__tip">上传文件格式为.jpg、.jpeg、.png、.gif，且不超过 2MB</div>
+                      </el-upload>
+                    </div>
+                    <div slot="footer" class="dialog-footer">
+                      <el-button @click="photoUpload = false">取 消</el-button>
+                      <el-button type="primary" @click="submitPhoto">确 定</el-button>
+                    </div>
+                  </el-dialog>
+                </template>
               </div>
             </el-aside>
             <el-main>
@@ -50,7 +52,7 @@
             :size="size"
             border
         >
-          <template #extra>
+          <template #extra v-if="isCurrentAdministrator">
             <!--点“编辑”按钮可以对管理员信息进行编辑-->
             <el-button type="primary"  v-if="!isEdit" @click="edit">编辑</el-button>
             <el-button type="primary" v-if="isEdit" @click="save">保存</el-button>
@@ -116,6 +118,7 @@
 </template>
 
 <script>
+import { ElMessage } from "element-plus";
 import axios from "axios"
 import NewsBlockList from "@/components/NewsBlockList.vue";
 export default {
@@ -135,9 +138,13 @@ export default {
     }
   },
   mounted() {
-    // 从后端API获取医师认证信息
+    let administratorID = parseInt(this.$route.params.administratorID ? this.$route.params.administratorID: 0);
+    if(isNaN(administratorID)){
+      this.$router.replace("/error");
+      return;
+    }
     //TODO 这个地方应该用团队里面的api
-    axios.get("https://mock.apifox.cn/m1/2961538-0-default/api/getUserIfo")
+    axios.post('/api/AdministratorInfo/Details',{administratorID})
         .then(response => {
           const responseData = response.data.data.administrator;
           this.administrator = responseData
@@ -154,12 +161,9 @@ export default {
         return '未登录';
       }
     },
-    displayAvatar() {
-      if(this.isLogin) {
-        return this.administrator.avatarUrl;
-      } else {
-        return null;
-      }
+    //判断是否是本人在查看信息页面，来判断该管理员是否可对信息进行修改
+    isCurrentAdministrator() {
+      return !this.$route.params.administratorID;
     }
   },
   methods:{
@@ -177,12 +181,33 @@ export default {
     save(){
       // 将修改后的管理员信息保存到数据库
       axios
-          .put('http://127.0.0.1:4523/m2/2961538-0-default/95495428', {
-            administrator: this.administrator,
-          })
+          .put('/api/modifyAdministratorInfo')
           .then(response => {
             // 保存成功后将isEdit变量设置为false，禁用编辑模式
             this.isEdit = false;
+                let user_info={
+                  //工号，名称，联系方式，邮箱
+                  id:this.administrator.id,
+                  name :this.UserInfo.userName,
+                  email:this.administrator.email,
+                  telephone:this.administrator0.telephone,
+                };
+                if(response.data.data.status == true){
+                  ElMessage({
+                    type: "success",
+                    message: "修改成功！",
+                    duration: 2000,
+                    showClose: true,
+                  });
+                  //store.commit("changePersonInfo", user_info);
+                } else {
+                  ElMessage({
+                    type: "error",
+                    message: "修改失败！",
+                    duration: 2000,
+                    showClose: true,
+                  });
+                }
           })
           .catch((error) => {
             this.isEdit = false;
