@@ -92,7 +92,7 @@ const onSubmit = async () => {
         isError.value = true
         return
     }
-    let response = await axios.post('/api/AdminRegister', registerCredential)
+    let response = await axios.post('/api/Register/AdminRegister', registerCredential)
     let responseObj = response.data
     if (responseObj.errorCode !== 200) {
         errorMsg.value = '错误代码' + responseObj.errorCode

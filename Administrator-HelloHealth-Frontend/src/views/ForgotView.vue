@@ -87,7 +87,7 @@ const onSubmit = async () => {
         return
     }
 
-    let response = await axios.post("/api/AdminForgotPassword",forgotPasswordCredential)
+    let response = await axios.post("/api/Register/AdminForgotPassword",forgotPasswordCredential)
     let responseObj = response.data;
     if(responseObj.errorCode!==200){
         errorMsg.value = "错误代码" + responseObj.errorCode;
