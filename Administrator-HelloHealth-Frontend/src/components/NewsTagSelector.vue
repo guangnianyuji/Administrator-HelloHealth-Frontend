@@ -53,7 +53,7 @@ export default {
     },
   },
   mounted() { // mounted 时获取全部标签列表
-    axios.get("https://mock.apifox.cn/m1/2961538-0-default/api/tagList?tag_id=&tag_name=")
+    axios.get("/api/tagList?tag_id=&tag_name=")
         .then(response => {
           this.tagList = response.data.data.tagList;
         })
@@ -76,7 +76,7 @@ export default {
 /*Mainer部分容器的样式设置*/
 .bottomBox{
   background-color: white;
-  border:2px solid #00bfa8;
+  border:2px solid #0093bf;
   border-radius: 10px;
   width: 270px;
 }
@@ -96,7 +96,7 @@ export default {
 /*设置按钮的选中效果*/
 .buttonStyle.active{
   background-color: white;
-  color: #00bfa8;
+  color: #0093bf;
 }
 /*按钮容器，设置按钮的排列样式*/
 .buttonContainer{
