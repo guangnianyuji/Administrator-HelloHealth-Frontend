@@ -1,7 +1,9 @@
 <template>
   <!--整个页面是可以上下滚动的-->
   <div  class="wrapper">
+
     <!--展示信息的分栏，分栏1：管理员头像-->
+
     <div>
       <el-card class="cardStyle">
         <div class="common-layout">
@@ -305,8 +307,10 @@ export default {
   width: 85%;
   margin: 0 auto;
 }
+
 /*ID的样式*/
 .idStyle{
   margin-right:40px;
 }
+
 </style>
