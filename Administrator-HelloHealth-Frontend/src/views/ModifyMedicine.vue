@@ -33,7 +33,7 @@
                 </el-col>
                 <el-col :span="12">
                     <div class="input-hint">
-                        连花清瘟胶囊
+                        {{medicineInfo.medicine_ch_name}}
                     </div>
                 </el-col>
                 <el-col :span="6">
@@ -306,15 +306,76 @@
 <script>
 import { ref } from 'vue'
 import {UploadFilled} from "@element-plus/icons-vue";
-
+import axios from "axios";
+import { ElMessage } from "element-plus";
 export default {
-    name: "AddMedicineView",
+    name: "ModifyMedicineView",
     components: {UploadFilled},
     data() {
         return {
-            isPrescription: false,
-            isInsurance: false
+            medicineInfo:null,
+            InfoIsModify: {
+                medicine_id: false,
+                medicine_ch_name: false,
+                medicine_en_name: false,
+                medicine_category: false,
+                medicine_abbreviation: false,
+                medicine_introduction: false,
+                medicine_country: false,
+                medicine_manufacturer: false,
+                medicine_form: false,
+                medicine_character: false,
+                medicine_ingredient: false,
+                medicine_validityperiod: false,
+                medicine_usage: false,
+                medicine_indications: false,
+                medicine_taboo: false,
+                medicine_storage: false,
+                is_prescription_medicine: false,
+                is_medical_insurance_medicine: false,
+                medicine_image: null,
+                medicine_reference_quote: false,
+            },
+            modified:{
+                medicine_id: '',
+                medicine_ch_name: '',
+                medicine_en_name: '',
+                medicine_category: '',
+                medicine_abbreviation: '',
+                medicine_introduction: '',
+                medicine_country: '',
+                medicine_manufacturer: '',
+                medicine_form: '',
+                medicine_character: '',
+                medicine_ingredient: '',
+                medicine_validityperiod: '',
+                medicine_usage: '',
+                medicine_indications: '',
+                medicine_taboo: '',
+                medicine_storage: '',
+                is_prescription_medicine: false,
+                is_medical_insurance_medicine: false,
+                medicine_image: null,
+                medicine_reference_quote: '',
+            }
         }
+    },
+    created() {
+        axios
+            .get("/api/admin/medicine/"+this.$route.query.medicine_id)
+            .then(response => {
+                if (response.data.data.status) {
+                    console.log("Successfully get medicine data");
+                    this.medicineInfo = response.data.data.medicineDetail;
+                } else {
+                    console.error("Error getting medicine data:", response.data.errorCode);
+                    ElMessage.error('获取失败：' + response.data.errorCode)
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                ElMessage.error('获取药品信息失败：' + error)
+            });
     },
     setup() {
         const centerDialogVisible = ref(false)

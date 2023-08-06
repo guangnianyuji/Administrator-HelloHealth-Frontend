@@ -1,4 +1,9 @@
 <template>
+    <div
+            class="school-center-layout"
+            v-loading.fullscreen.lock="isLoading"
+            element-loading-text="正在加载"
+    />
     <div class="MM_body">
         <el-card class="MM_title">
             <el-row>
@@ -22,7 +27,7 @@
                     </el-row>
                     <el-row>
                         <div class="describe_text">
-                            当前药品列表如下，共xx个药品，按名称字典排序：
+                            当前药品列表如下，共{{ this.all_num }}个药品，按名称字典排序：
                         </div>
                     </el-row>
                 </el-col>
@@ -31,116 +36,141 @@
                 </el-col>
             </el-row>
         </el-card>
+
         <!--        药品卡片-->
-        <div class="MedicineCard">
-            <el-card class="Medicine-Card hover-card" shadow="hover">
-                <el-row>
-                    <el-col :span="8">
-                        <div style="color: gray">编号：001</div>
-                        <img class="img" src="@/assets/连花清瘟.jpg">
-                    </el-col>
-                    <el-col :span="13">
-                        <el-row class="M_title">连花清瘟胶囊（LianHua QingWen JiaoNang）</el-row>
-                        <div class="content">类别：中药</div>
-                        <div class="content">厂商：石家庄以岭药业股份有限公司</div>
-                        <div class="content">是否医保药：是</div>
-                        <div class="content">是否处方：否</div>
-                        <div class="content">适应症：高热 恶寒 肌肉酸痛 鼻塞 咳嗽 头痛 咽痛 流行性感冒 感冒</div>
-                    </el-col>
-                    <el-col :span="3">
-                        <button class="edit fancy">
-                            <span class="shadow"></span>
-                            <span class="edit-edge"></span>
-                            <span class="edit-front text" @click="gotoModifyMedicinePage"> 编辑</span>
-                        </button>
-                        <button class="delete fancy">
-                            <span class="shadow"></span>
-                            <span class="edge"></span>
-                            <span class="front text" @click="centerDialogVisible = true"> 删除</span>
-                        </button>
-                        <el-dialog v-model="centerDialogVisible" title="警告" width="30%" center>
-                            <span style="margin-left: 40px">你确认要删除该药品信息吗? 此操作不可逆！</span>
-                            <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取消</el-button>
-        <el-button type="danger" @click="centerDialogVisible = false">
-          确认
-        </el-button>
-      </span>
-                            </template>
-                        </el-dialog>
-                    </el-col>
-                </el-row>
-            </el-card>
+        <div v-for="(medicine, index) in page_list" :key="medicine.medicine_id">
+            <medicine-info-card
+                    :medicine="medicine"
+                    @deletesuccess="removeFromList(index)"
+            ></medicine-info-card>
+            <br/>
         </div>
-        <div class="MedicineCard">
-            <el-card class="Medicine-Card hover-card" shadow="hover">
-                <el-row>
-                    <el-col :span="8">
-                        <div style="color: gray">编号：002</div>
-                        <img class="img" src="@/assets/颗粒.jpg">
-                    </el-col>
-                    <el-col :span="13">
-                        <el-row class="M_title">消旋卡多曲颗粒（Racecadotril Granules）</el-row>
-                        <div class="content">类别：西药</div>
-                        <div class="content">厂商：四川百利药业有限责任公司</div>
-                        <div class="content">是否医保药：是</div>
-                        <div class="content">是否处方：是</div>
-                        <div class="content">适应症：用于1月以上婴儿和儿童的急性腹泻，必要时给予口服补液或静脉补液</div>
-                    </el-col>
-                    <el-col :span="3">
-                        <button class="edit fancy">
-                            <span class="shadow"></span>
-                            <span class="edit-edge"></span>
-                            <span class="edit-front text"> 编辑</span>
-                        </button>
-                        <button class="delete fancy">
-                            <span class="shadow"></span>
-                            <span class="edge"></span>
-                            <span class="front text"> 删除</span>
-                        </button>
-                    </el-col>
-                </el-row>
-            </el-card>
-        </div>
+<!--            如果没有药品-->
+            <div v-if="page_list.length === 0" class="no_medicine">
+                <el-card>暂无药品信息</el-card>
+            </div>
+
+
         <!--        分页-->
         <div class="pagination">
             <el-pagination
                     background
                     layout="prev, pager, next"
-                    :total="1000">
-            </el-pagination>
+                    :page-size="PAGESIZE"
+                    :total="all_num"
+                    @current-change="curChange"/>
         </div>
     </div>
 </template>
 
 <script>
-
-
+import MedicineInfoCard from "@/components/MedicineInfoCard.vue";
+import axios from "axios";
 import {ref} from "vue";
 
 export default {
     name: "ManageMedicineView",
+    components: {MedicineInfoCard},
     data() {
-        return {}
+        return {
+            cur_page: 1,
+            page_num: 90,
+            PAGESIZE: 2,
+            all_num: 0,//总药品个数
+            medicine_list: [
+                {
+                    medicine_id: '001',
+                    medicine_ch_name: '连花清瘟胶囊',
+                    medicine_en_name: 'LianHua QingWen JiaoNang',
+                    medicine_category: '中药',
+                    medicine_abbreviation: '5',
+                    medicine_introduction: '6',
+                    medicine_country: '7',
+                    medicine_manufacturer: '石家庄以岭药业股份有限公司',
+                    medicine_form: '9',
+                    medicine_character: '1',
+                    medicine_ingredient: '2',
+                    medicine_validityperiod: '3',
+                    medicine_usage: '4',
+                    medicine_indications: '高热 恶寒 肌肉酸痛 鼻塞 咳嗽 头痛 咽痛 流行性感冒 感冒',
+                    medicine_taboo: '6',
+                    medicine_storage: '8',
+                    is_prescription_medicine: true,
+                    is_medical_insurance_medicine: false,
+                    medicine_image: null,
+                },
+                {
+                    medicine_id: '002',
+                    medicine_ch_name: '消旋卡多曲颗粒',
+                    medicine_en_name: 'Racecadotril Granules',
+                    medicine_category: '西药',
+                    medicine_abbreviation: 'd',
+                    medicine_introduction: '6',
+                    medicine_country: '7',
+                    medicine_manufacturer: '四川百利药业有限责任公司',
+                    medicine_form: '9',
+                    medicine_character: '1',
+                    medicine_ingredient: '2',
+                    medicine_validityperiod: '3',
+                    medicine_usage: '4',
+                    medicine_indications: '用于1月以上婴儿和儿童的急性腹泻，必要时给予口服补液或静脉补液',
+                    medicine_taboo: '6',
+                    medicine_storage: '8',
+                    is_prescription_medicine: true,
+                    is_medical_insurance_medicine: true,
+                    medicine_image: null,
+                },
+            ], //经过筛选条件后下面展示的药品
+            all_medicine_list: [], //最初赋值获得的所有药品
+            page_list:[],//当前页面的药品列表
+            search_value: "",
+            isLoading: false,
+
+        }
     },
     methods: {
+        curChange(res) {
+            this.cur_page = res;
+            this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
+        },
         gotoAddMedicinePage() {
             this.$router.push('/AddMedicine');
         },
         gotoModifyMedicinePage() {
             this.$router.push('/ModifyMedicine');
-        }
+        },
+        removeFromList(index) {//删除药品
+            // 根据传入的page和index计算出在medicine_list中的index
+            let real_index = (this.cur_page - 1) * this.PAGESIZE + index;
+            console.log("删除的药品在medicine_list中的index为：" + real_index);
+            // 从medicine_list中删除该药品
+            this.medicine_list.splice(real_index, 1);
+            console.log("删除后的药品列表：");
+            console.log(this.medicine_list);
+            this.curChange(this.cur_page);
+            this.all_num--;
+        },
     },
-    setup() {
-        const centerDialogVisible = ref(false)
-        return {
-            centerDialogVisible
-        }
+    created() {//页面初始化时获取数据，获取全部的药品列表
+        this.isLoading = true;
+        axios({
+            url: "/api/admin/medicine/list",
+            method: "get",
+        }).then((res) => {
+            console.log("已获取到数据");
+            this.all_num = res.data.data.medicineBasicInfoList.length;//药品数组长度
+            this.page_num = Math.ceil(this.all_num / this.PAGESIZE); //向上取整
+            this.all_medicine_list = res.data.data.medicineBasicInfoList;
+            //this.medicine_list = this.all_medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
+            this.medicine_list =this.all_medicine_list;//一开始没有任何筛选条件时
+            console.log("所有药品列表：");
+            console.log(this.medicine_list);
+            this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
+            this.isLoading = false;
+        });
 
     }
 }
-
 </script>
 
 <style scoped>
@@ -168,32 +198,6 @@ export default {
 .describe_text {
     margin-top: 30px;
     color: gray;
-}
-
-.MedicineCard {
-    margin-top: 20px;
-}
-
-.Medicine-Card {
-    width: 94%;
-    margin: 0 auto;
-//border-radius: 20px;
-}
-
-.img {
-    width: 80%;
-    margin-top: 10px;
-}
-
-.M_title {
-    font-size: 23px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-.content {
-    margin-top: 10px;
 }
 
 button.fancy {
@@ -278,45 +282,6 @@ button:focus:not(:focus-visible) {
     outline: none;
 }
 
-.delete {
-    margin-top: 20px;
-    margin-left: 10px;
-}
-
-.edit {
-    margin-top: 50px;
-    margin-left: 10px;
-}
-
-.edit-edge {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 12px;
-    background: linear-gradient(
-            to left,
-            hsl(340deg 100% 16%) 0%,
-            hsl(194, 100%, 22%) 8%,
-            hsl(195, 89%, 26%) 92%,
-            hsl(340deg 100% 16%) 100%
-    );
-}
-
-.edit-front {
-    display: block;
-    position: relative;
-    padding: 12px 27px;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    color: white;
-    background: hsl(194, 97%, 39%);
-    will-change: transform;
-    transform: translateY(-4px);
-    transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
-}
-
 button:hover .edit-front {
     transform: translateY(-6px);
     transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
@@ -328,7 +293,7 @@ button:active .edit-front {
 }
 
 .pagination {
-    margin-left: 33%;
+    margin-left: 45%;
     margin-top: 20px;
 }
 
@@ -336,10 +301,16 @@ button:active .edit-front {
     border: RGB(0, 147, 191) 0.15em solid;
 }
 
-.centerIcon{
+.centerIcon {
     margin: 0 0 0 5px;
 }
-
+.no_medicine{
+    margin-top: 20px;
+    font-size: 20px;
+    color: gray;
+    text-align: center;
+    animation: fly-1 1s infinite alternate;
+}
 @keyframes fly-1 {
     from {
         transform: translateY(0.1em);
