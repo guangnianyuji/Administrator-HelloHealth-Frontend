@@ -1,7 +1,9 @@
 <template>
   <!--整个页面是可以上下滚动的-->
   <div  class="wrapper">
-    <!--展示信息的分栏，分栏1：用户头像-->
+
+    <!--展示信息的分栏，分栏1：管理员头像-->
+
     <div>
       <el-card class="cardStyle">
         <div class="common-layout">
@@ -65,7 +67,7 @@
                 </div>
               </template>
               <!--从数据库获取管理员的工号-->
-              <el-input v-model="administrator.id" :disabled="!isEdit"></el-input>
+                  <span class="idStyle">{{administrator.id}}</span>
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>
@@ -144,7 +146,7 @@ export default {
       return;
     }
     //TODO 这个地方应该用团队里面的api
-    axios.post('/api/AdministratorInfo/Details',{administratorID})
+    axios.post('/api/Administrator/Details',{administratorID})
         .then(response => {
           const responseData = response.data.data.administrator;
           this.administrator = responseData
@@ -181,14 +183,14 @@ export default {
     save(){
       // 将修改后的管理员信息保存到数据库
       axios
-          .put('/api/modifyAdministratorInfo')
+          .post('/api/modifyAdministratorInfo')
           .then(response => {
             // 保存成功后将isEdit变量设置为false，禁用编辑模式
             this.isEdit = false;
                 let user_info={
                   //工号，名称，联系方式，邮箱
                   id:this.administrator.id,
-                  name :this.UserInfo.userName,
+                  name :this.administrator.name,
                   email:this.administrator.email,
                   telephone:this.administrator0.telephone,
                 };
@@ -305,4 +307,10 @@ export default {
   width: 85%;
   margin: 0 auto;
 }
+
+/*ID的样式*/
+.idStyle{
+  margin-right:40px;
+}
+
 </style>

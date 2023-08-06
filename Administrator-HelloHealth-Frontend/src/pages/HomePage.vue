@@ -147,7 +147,7 @@ onMounted(()=>{
 
 
                 <el-menu :default-active="getSidebarPath()" class="sideBarMenu" ref="menu">
-                    <component v-for="item in menus" :is="item.children ? ElSubMenu : ElMenuItem" :index="item.path" @click="menuItemClick">
+                    <component v-for="item in menus" :is="item.children ? ElSubMenu : ElMenuItem" :index="item.path" v-on="item.children ? {}: {click: menuItemClick}">
                         <template #title>
                             <i class="fi" :class="item.icon"></i>
                             <span>{{item.title}}</span>
