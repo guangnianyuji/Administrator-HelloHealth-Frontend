@@ -51,7 +51,7 @@
             v-model="newFlashInfo.tags"
             multiple
             placeholder="选择2~4个标签"
-            style="width: 240px"
+            style="width: 100%"
             :allow-create="true"
             :filterable="true"
             :multiple-limit="4"
@@ -178,6 +178,7 @@ export default defineComponent({
         // 如果是编辑新闻，调用 updateNews
         this.$refs.newsBlockListInstance.updateNews(newNews);
       }
+      this.$refs.editor.editor.commands.clearContent();
     },
     getCoverImageUrl(contentJson) {
       contentJson = JSON.parse(contentJson);
