@@ -1,16 +1,14 @@
 <template>
   <!--整个页面是可以上下滚动的-->
   <div  class="wrapper">
-
     <!--展示信息的分栏，分栏1：管理员头像-->
-
     <div>
       <el-card class="cardStyle">
         <div class="common-layout">
           <el-container>
-            <el-aside>
+            <el-aside width="200px">
               <div class="avatar-container">
-                <el-avatar class="avatar" :src="isAdministrator ? 'administrator.portrait' : null"></el-avatar>
+                <el-avatar :size="100" style="margin-left:30px;margin-top:20px;" fit="contain" :src="isLogin ? administrator.portrait :require('/src/assets/defaultAvatar.png')"></el-avatar>
                 <template v-if="isCurrentAdministrator">
                   <el-button class="pic-edit-button" type="primary" icon="el-icon-edit" @click="showPhotoUpload">Edit</el-button>
                   <el-dialog v-model="photoUpload" title="头像上传" width="50%">
@@ -146,7 +144,7 @@ export default {
       return;
     }
     //TODO 这个地方应该用团队里面的api
-    axios.post('/api/Administrator/Details',{administratorID})
+    axios.get('/api/Administrator/Details')
         .then(response => {
           const responseData = response.data.data.administrator;
           this.administrator = responseData
@@ -218,6 +216,7 @@ export default {
     },
     handleChange(file,fileList){
       console.log(file,fileList);
+      this.file = file.raw
     },
     /*将管理员上传的头像传给后端数据库*/
     submitPhoto(){
@@ -225,13 +224,20 @@ export default {
       const formData = new FormData();
       formData.append('file', this.file);
       // 发起一个 POST 请求，将 formData 发送给后端服务器
-      axios.post("https://mock.apifox.cn/m1/2961538-0-default/api/uploadAvatar", formData)
+      axios.post("/api/UserInfo/uploadAvatar", formData)
           .then(response => {
             console.log(response.data);
-            this.photoUpload = false;
+            if(response.data.data.status == true){
+              ElMessage.success("更改成功！");
+              this.photoUpload = false;
+            }
+            else{
+              ElMessage.error("更改失败！");
+            }
           })
           .catch(error => {
             console.error(error);
+            ElMessage.error("更改失败！");
           });
     },
   }
@@ -307,10 +313,8 @@ export default {
   width: 85%;
   margin: 0 auto;
 }
-
 /*ID的样式*/
 .idStyle{
   margin-right:40px;
 }
-
 </style>
