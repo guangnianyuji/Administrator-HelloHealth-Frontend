@@ -5,7 +5,7 @@
                 <el-col :span="18">
 
                     <el-row>
-                        <div class="title">编辑药品信息</div>
+                        <div class="title">编辑药品信息</div><back-button style="margin-left: 25%;margin-top: 5px"></back-button>
                     </el-row>
 
                     <el-row>
@@ -14,7 +14,14 @@
                     <br>
                     <el-row>
                         <div class="annotation">
-                            请注意：药品中文名称、药品分类、药品厂商、药品剂型、药品成分、药品用法、药品适应症、药品禁忌、是否为处方药、是否为医保药，不可为空！
+                            请注意：<br>
+                            1.药品中文名称、药品分类、药品厂商、药品剂型、药品成分、药品用法、药品适应症、药品禁忌、是否为处方药、是否为医保药，不可为空！
+                        </div>
+                    </el-row>
+<!--                    <br>-->
+                    <el-row>
+                        <div class="annotation">
+                            2.批准文号不可更改，以批准文号为标准进行修改
                         </div>
                     </el-row>
                 </el-col>
@@ -25,28 +32,42 @@
         </el-card>
     </div>
 
+
+
     <div class="AddMedicineFrame">
         <el-card class="Medicine-Card">
+
+            <el-row class="info-input">
+                <el-col :span="6">
+                    <div class="input-hint">药品批准文号：</div>
+                </el-col>
+                <el-col :span="18">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_id}}
+                    </div>
+                </el-col>
+            </el-row>
+
             <el-row class="info-input">
                 <el-col :span="6">
                     <div class="input-hint">药品中文名称：</div>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="13">
                     <div class="input-hint">
-                        {{medicineInfo.medicine_ch_name}}
+                       {{medicineInfo.medicine_ch_name}}
                     </div>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="5">
                     <el-button type="primary" class="modify-button" @click="centerDialogVisible = true">修改</el-button>
                     <el-dialog v-model="centerDialogVisible" title="修改药品中文名称" width="30%" center>
-                        <el-input v-model="input" placeholder="请输入新的中文名称" />
+                        <el-input v-model="modified.medicine_ch_name" clearable placeholder="请输入新的中文名称" />
                         <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="centerDialogVisible = false">
-          确认
-        </el-button>
-      </span>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_ch_name=this.medicineInfo.medicine_ch_name;centerDialogVisible = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible = false">
+                          确认
+                        </el-button>
+                      </span>
                         </template>
                     </el-dialog>
                 </el-col>
@@ -56,11 +77,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品英文名称：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品英文名称">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_en_name}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible2 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible2" title="修改药品英文名称" width="30%" center>
+                        <el-input v-model="modified.medicine_en_name" clearable placeholder="请输入新的英文名称" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_en_name=this.medicineInfo.medicine_en_name;centerDialogVisible2 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible2 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -68,7 +102,7 @@
                 <el-col :span="6">
                     <div class="input-hint">药品图片：</div>
                 </el-col>
-                <el-col :span="18">
+                <el-col :span="16">
                     <el-upload
                             class="upload-demo"
                             drag
@@ -96,11 +130,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品分类：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品分类">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_category}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible3 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible3" title="修改药品分类" width="30%" center>
+                        <el-input v-model="modified.medicine_category" clearable placeholder="请输入新的药品分类" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_category=this.medicineInfo.medicine_category;centerDialogVisible3 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible3 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -108,11 +155,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品简称：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品简称">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_abbreviation}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible4 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible4" title="修改药品简称" width="30%" center>
+                        <el-input v-model="modified.medicine_abbreviation" clearable placeholder="请输入新的药品简称" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_abbreviation=this.medicineInfo.medicine_abbreviation;centerDialogVisible4 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible4 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -120,11 +180,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品简介：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品简介">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_introduction}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible5 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible5" title="修改药品简介" width="30%" center>
+                        <el-input v-model="modified.medicine_introduction" clearable type="textarea" autosize placeholder="请输入新的药品简介" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_introduction=this.medicineInfo.medicine_introduction;centerDialogVisible5 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible5 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -132,11 +205,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品来源国家：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品来源国家">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_country}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible6 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible6" title="修改药品来源国家" width="30%" center>
+                        <el-input v-model="modified.medicine_country" clearable placeholder="请输入新的药品来源国家" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_country=this.medicineInfo.medicine_country;centerDialogVisible6 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible6 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -144,11 +230,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品厂商：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品厂商">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_manufacturer}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible7 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible7" title="修改药品厂商" width="30%" center>
+                        <el-input v-model="modified.medicine_manufacturer" clearable placeholder="请输入新的药品厂商" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_manufacturer=this.medicineInfo.medicine_manufacturer;centerDialogVisible7 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible7 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -156,23 +255,50 @@
                 <el-col :span="6">
                     <div class="input-hint">药品剂型：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品剂型">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_form}}
                     </div>
                 </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible8 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible8" title="修改药品剂型" width="30%" center>
+                        <el-input v-model="modified.medicine_form" clearable placeholder="请输入新的药品剂型" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_form=this.medicineInfo.medicine_form;centerDialogVisible8 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible8 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
+                </el-col>
             </el-row>
+
 
             <el-row class="info-input">
                 <el-col :span="6">
                     <div class="input-hint">药品性状：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品性状">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_character}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible9 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible9" title="修改药品性状" width="30%" center>
+                        <el-input v-model="modified.medicine_character" clearable type="textarea" autosize placeholder="请输入新的药品性状" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_character=this.medicineInfo.medicine_character;centerDialogVisible9 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible9 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -180,11 +306,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品成分：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品成分">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_ingredient}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible10 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible10" title="修改药品成分" width="30%" center>
+                        <el-input v-model="modified.medicine_ingredient" clearable type="textarea" autosize placeholder="请输入新的药品成分" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_ingredient=this.medicineInfo.medicine_ingredient;centerDialogVisible10 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible10 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -192,11 +331,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品有效期：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品有效期">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_validityperiod}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible11 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible11" title="修改药品有效期" width="30%" center>
+                        <el-input v-model="modified.medicine_validityperiod" clearable placeholder="请输入新的药品有效期" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_validityperiod=this.medicineInfo.medicine_validityperiod;centerDialogVisible11 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible11 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -204,11 +356,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品用法：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品用法">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_usage}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible12 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible12" title="修改药品用法" width="30%" center>
+                        <el-input v-model="modified.medicine_usage" clearable type="textarea" autosize placeholder="请输入新的药品用法" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_usage=this.medicineInfo.medicine_usage;centerDialogVisible12 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible12 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -216,11 +381,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品适应症：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品适应症">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_indications}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible13 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible13" title="修改药品适应症" width="30%" center>
+                        <el-input v-model="modified.medicine_indications" clearable type="textarea" autosize placeholder="请输入新的药品适应症" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_indications=this.medicineInfo.medicine_indications;centerDialogVisible13 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible13 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -228,11 +406,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品禁忌：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品禁忌">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_taboo}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible14 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible14" title="修改药品禁忌" width="30%" center>
+                        <el-input v-model="modified.medicine_taboo" clearable type="textarea" autosize placeholder="请输入新的药品禁忌" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_taboo=this.medicineInfo.medicine_taboo;centerDialogVisible14 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible14 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -240,11 +431,24 @@
                 <el-col :span="6">
                     <div class="input-hint">药品贮藏方法：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品贮藏方法">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_storage}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible15 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible15" title="修改药品贮藏方法" width="30%" center>
+                        <el-input v-model="modified.medicine_storage" clearable type="textarea" autosize placeholder="请输入新的药品贮藏方法" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_storage=this.medicineInfo.medicine_storage;centerDialogVisible15 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible15 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
@@ -253,7 +457,7 @@
                     <div class="input-hint">是否为处方药：</div>
                 </el-col>
                 <el-col :span="18">
-                    <el-radio-group v-model="isPrescription" class="ml-4">
+                    <el-radio-group v-model="this.is_prescription_medicine" class="ml-4">
                         <el-radio :label="true" size="large">是</el-radio>
                         <el-radio :label="false" size="large">否</el-radio>
                     </el-radio-group>
@@ -265,7 +469,7 @@
                     <div class="input-hint">是否为医保药：</div>
                 </el-col>
                 <el-col :span="18">
-                    <el-radio-group v-model="isInsurance" class="ml-4">
+                    <el-radio-group v-model="this.is_medical_insurance_medicine" class="ml-4">
                         <el-radio :label="true" size="large">是</el-radio>
                         <el-radio :label="false" size="large">否</el-radio>
                     </el-radio-group>
@@ -276,16 +480,29 @@
                 <el-col :span="6">
                     <div class="input-hint">药品参考报价：</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品参考报价">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_reference_quote}}
                     </div>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="centerDialogVisible16 = true">修改</el-button>
+                    <el-dialog v-model="centerDialogVisible16" title="修改药品参考报价" width="30%" center>
+                        <el-input v-model="modified.medicine_reference_quote" clearable placeholder="请输入新的药品参考报价" />
+                        <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="this.modified.medicine_reference_quote=this.medicineInfo.medicine_reference_quote;centerDialogVisible16 = false;">取消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible16 = false">
+                          确认
+                        </el-button>
+                      </span>
+                        </template>
+                    </el-dialog>
                 </el-col>
             </el-row>
 
             <el-row>
-                <button class="submitButton">
+                <button class="submitButton" @click="submit">
                     <span class="svg-wrapper-1">
                         <span class="svg-wrapper">
                             <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -308,34 +525,13 @@ import { ref } from 'vue'
 import {UploadFilled} from "@element-plus/icons-vue";
 import axios from "axios";
 import { ElMessage } from "element-plus";
+import BackButton from "@/components/BackButton.vue";
 export default {
     name: "ModifyMedicineView",
-    components: {UploadFilled},
+    components: {BackButton, UploadFilled},
     data() {
         return {
-            medicineInfo:null,
-            InfoIsModify: {
-                medicine_id: false,
-                medicine_ch_name: false,
-                medicine_en_name: false,
-                medicine_category: false,
-                medicine_abbreviation: false,
-                medicine_introduction: false,
-                medicine_country: false,
-                medicine_manufacturer: false,
-                medicine_form: false,
-                medicine_character: false,
-                medicine_ingredient: false,
-                medicine_validityperiod: false,
-                medicine_usage: false,
-                medicine_indications: false,
-                medicine_taboo: false,
-                medicine_storage: false,
-                is_prescription_medicine: false,
-                is_medical_insurance_medicine: false,
-                medicine_image: null,
-                medicine_reference_quote: false,
-            },
+            medicineInfo:{},
             modified:{
                 medicine_id: '',
                 medicine_ch_name: '',
@@ -357,6 +553,58 @@ export default {
                 is_medical_insurance_medicine: false,
                 medicine_image: null,
                 medicine_reference_quote: '',
+            },
+            centerDialogVisible: false,
+            centerDialogVisible2: false,
+            centerDialogVisible3: false,
+            centerDialogVisible4: false,
+            centerDialogVisible5: false,
+            centerDialogVisible6: false,
+            centerDialogVisible7: false,
+            centerDialogVisible8: false,
+            centerDialogVisible9: false,
+            centerDialogVisible10: false,
+            centerDialogVisible11: false,
+            centerDialogVisible12: false,
+            centerDialogVisible13: false,
+            centerDialogVisible14: false,
+            centerDialogVisible15: false,
+            centerDialogVisible16: false,
+            is_medical_insurance_medicine: false,
+            is_prescription_medicine: false,
+        }
+    },
+    methods:{
+        check(){
+            //药品中文名称、药品分类、药品厂商、药品剂型、药品成分、药品用法、药品适应症、药品禁忌、是否为处方药、是否为医保药，不可为空！
+            if(this.modified.medicine_ch_name===''||this.modified.medicine_category===''||this.modified.medicine_manufacturer===''||this.modified.medicine_form===''||this.modified.medicine_ingredient===''||this.modified.medicine_usage===''||this.modified.medicine_indications===''||this.modified.medicine_taboo===''||this.modified.is_prescription_medicine===''||this.modified.is_medical_insurance_medicine===''){
+                ElMessage.error('请填写完整信息！');
+                return false;
+            }else{
+                return true;
+            }
+        },
+        submit(){
+            if(this.check()) {
+                console.log(this.modified);
+                this.modified.is_medical_insurance_medicine = this.is_medical_insurance_medicine ? '医保药物' : '非医保药物';
+                this.modified.is_prescription_medicine = this.is_prescription_medicine ? '处方药物' : '非处方药物';
+                console.log(this.modified.is_medical_insurance_medicine);
+                console.log(this.modified.is_prescription_medicine);
+                axios.post("/api/admin/medicine/" + this.modified.medicine_id, this.modified)
+                    .then(response => {
+                        if (response.data.data.status) {
+                            ElMessage.success('修改成功');
+                            console.log("Successfully modify medicine data:" + response.data.data.message);
+                        } else {
+                            console.error("Error modifying medicine data:", response.data.errorCode);
+                            ElMessage.error('修改失败：' + response.data.errorCode)
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error modifying medicine data:", error);
+                        ElMessage.error('修改失败：' + error)
+                    })
             }
         }
     },
@@ -365,8 +613,13 @@ export default {
             .get("/api/admin/medicine/"+this.$route.query.medicine_id)
             .then(response => {
                 if (response.data.data.status) {
+                    ElMessage.success('获取药品信息成功');
                     console.log("Successfully get medicine data");
+                    console.log(response.data.data.medicineDetail);
                     this.medicineInfo = response.data.data.medicineDetail;
+                    this.modified= this.medicineInfo;//一开始modified等于medicineInfo
+                    this.is_medical_insurance_medicine=this.modified.is_medical_insurance_medicine.includes('非')?false:true;
+                    this.is_prescription_medicine=this.modified.is_prescription_medicine.includes('非')?false:true;
                 } else {
                     console.error("Error getting medicine data:", response.data.errorCode);
                     ElMessage.error('获取失败：' + response.data.errorCode)
@@ -377,15 +630,15 @@ export default {
                 ElMessage.error('获取药品信息失败：' + error)
             });
     },
-    setup() {
-        const centerDialogVisible = ref(false)
-        const input = ref('')
-        return {
-            centerDialogVisible,
-            input
-        }
-
-    }
+    // setup() {
+    //     const centerDialogVisible = ref(false)
+    //     const input = ref('')
+    //     return {
+    //         centerDialogVisible,
+    //         input
+    //     }
+    //
+    // }
 }
 </script>
 <style scoped>
@@ -495,7 +748,7 @@ export default {
 }
 
 .input-hint {
-
+margin-right: 50px;
 }
 
 .upload-demo {

@@ -3,9 +3,8 @@
         <el-card class="AM_title">
             <el-row>
                 <el-col :span="18">
-                    <!--                    <button @click="gotoManageMedicinePage">返回</button>-->
                     <el-row>
-                        <div class="title">添加药品信息</div>
+                        <div class="title">添加药品信息</div><back-button style="margin-left: 25%;margin-top: 5px"></back-button>
                     </el-row>
 
                     <el-row>
@@ -408,7 +407,7 @@
 
             <el-row>
                 <!--                提交按钮-->
-                <button @click="submitNewInfo">
+                <button @click="submitNewInfo" class="submitButton">
                     <span class="svg-wrapper-1">
                         <span class="svg-wrapper">
                             <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -430,10 +429,12 @@
 import {UploadFilled} from '@element-plus/icons-vue'
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import BackButton from "@/components/BackButton.vue";
 
 export default {
     name: "AddMedicineView",
     components: {
+        BackButton,
         UploadFilled
     },
     data() {
@@ -658,7 +659,7 @@ export default {
     width: 75%;
 }
 
-button {
+.submitButton {
     margin-top: 40px;
     margin-bottom: 20px;
     margin-left: 45%;
@@ -676,31 +677,31 @@ button {
     transition: all 0.2s;
 }
 
-button span.text {
+.submitButton span.text {
     display: block;
     margin-left: 0.3em;
     transition: all 0.3s ease-in-out;
 }
 
-button svg {
+.submitButton svg {
     display: block;
     transform-origin: center center;
     transition: transform 0.3s ease-in-out;
 }
 
-button:hover .svg-wrapper {
+.submitButton:hover .svg-wrapper {
     animation: fly-1 0.6s ease-in-out infinite alternate;
 }
 
-button:hover svg {
+.submitButton:hover svg {
     transform: translateX(1.2em) rotate(45deg) scale(1.1);
 }
 
-button:hover span.text {
+.submitButton:hover span.text {
     transform: translateX(5em);
 }
 
-button:active {
+.submitButton:active {
     transform: scale(0.95);
 }
 

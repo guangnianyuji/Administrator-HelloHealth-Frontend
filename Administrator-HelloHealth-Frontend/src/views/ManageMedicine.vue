@@ -13,10 +13,10 @@
                     </el-row>
                     <el-row>
                         <el-col :span="10">
-                            <el-input style="width: 95%" placeholder="请输入药品名称"></el-input>
+                            <el-input style="width: 95%" v-model.change="this.search_value" clearable @change="search" placeholder="请输入药品中文名称"></el-input>
                         </el-col>
                         <el-col :span="3">
-                            <el-button type="primary">搜索</el-button>
+                            <el-button type="primary" @click="search">搜索</el-button>
                         </el-col>
                         <el-col :span="4">
                             <el-button type="primary" @click="gotoAddMedicinePage">
@@ -27,7 +27,7 @@
                     </el-row>
                     <el-row>
                         <div class="describe_text">
-                            当前药品列表如下，共{{ this.all_num }}个药品，按名称字典排序：
+                            当前药品列表如下，共{{ this.all_num }}个药品：
                         </div>
                     </el-row>
                 </el-col>
@@ -129,6 +129,28 @@ export default {
         }
     },
     methods: {
+        search(){
+            this.isLoading=true;
+            // 根据输入的药品名称进行搜索
+            // 如果输入为空，则显示所有药品
+            if (this.search_value === "") {
+                this.medicine_list = this.all_medicine_list;
+                this.all_num = this.medicine_list.length;this.page_num = Math.ceil(this.all_num / this.PAGESIZE); //向上取整
+                this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
+                this.isLoading=false;
+            }
+            else{// 否则，根据输入的药品名称进行搜索
+                this.medicine_list = this.all_medicine_list.filter((medicine) => {
+                    return medicine.medicine_ch_name.includes(this.search_value)?true:false;//该药品中文名是否包含输入的文字
+                });
+                this.all_num = this.medicine_list.length;
+                this.page_num = Math.ceil(this.all_num / this.PAGESIZE); //向上取整
+                this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
+                this.isLoading=false;
+                console.log("筛选后的药品列表：");
+                console.log(this.medicine_list);
+            }
+        },
         curChange(res) {
             this.cur_page = res;
             this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
@@ -150,26 +172,29 @@ export default {
             this.curChange(this.cur_page);
             this.all_num--;
         },
+        refresh(){
+            console.log("我更新了！")
+            this.isLoading = true
+            axios({
+                url: "/api/admin/medicine/list",
+                method: "get",
+            }).then((res) => {
+                console.log("已获取到数据");
+                this.all_num = res.data.data.medicineBasicInfoList.length;//药品数组长度
+                this.page_num = Math.ceil(this.all_num / this.PAGESIZE); //向上取整
+                this.all_medicine_list = res.data.data.medicineBasicInfoList;
+                //this.medicine_list = this.all_medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
+                this.medicine_list =this.all_medicine_list;//一开始没有任何筛选条件时
+                console.log("所有药品列表：");
+                console.log(this.medicine_list);
+                this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
+                this.isLoading = false;
+            });
+        },
     },
     created() {//页面初始化时获取数据，获取全部的药品列表
-        this.isLoading = true;
-        axios({
-            url: "/api/admin/medicine/list",
-            method: "get",
-        }).then((res) => {
-            console.log("已获取到数据");
-            this.all_num = res.data.data.medicineBasicInfoList.length;//药品数组长度
-            this.page_num = Math.ceil(this.all_num / this.PAGESIZE); //向上取整
-            this.all_medicine_list = res.data.data.medicineBasicInfoList;
-            //this.medicine_list = this.all_medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
-            this.medicine_list =this.all_medicine_list;//一开始没有任何筛选条件时
-            console.log("所有药品列表：");
-            console.log(this.medicine_list);
-            this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
-            this.isLoading = false;
-        });
-
-    }
+        this.refresh();
+    },
 }
 </script>
 
