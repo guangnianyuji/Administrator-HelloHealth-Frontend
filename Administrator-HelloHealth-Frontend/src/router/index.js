@@ -50,7 +50,18 @@ const router = createRouter({
                 }, {
                     path: "ModifyMedicine",
                     component: () => import("@/views/ModifyMedicine.vue"),
-                },
+                }, {
+                    path: "newsManagement",
+                    component: () => import ("@/views/FlashEditorView.vue")
+                },{
+                    path: "adminiInfo",
+                    name: "myView",
+                    component: () => import("@/views/AdministratorInfoView.vue")
+                },{
+                    path: "adminiInfo/:administratorID",
+                    name: "otherView",
+                    component: () => import("@/views/AdministratorInfoView.vue")
+                }
             ]
         },{
             path: "/test",
