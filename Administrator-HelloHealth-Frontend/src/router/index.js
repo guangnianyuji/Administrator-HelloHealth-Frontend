@@ -31,7 +31,7 @@ const router = createRouter({
                 {
                     path: "",
                     name: "homeView",
-                    component: ()=>import("@/views/TestView1.vue"),
+                    component: ()=>import("@/views/AdministratorInfoView.vue"),
                 },{
                     path: "qualificationVerify",
                     component: () => import("@/views/CheckDoctorView.vue")
