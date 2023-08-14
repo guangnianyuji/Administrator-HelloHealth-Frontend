@@ -5,6 +5,17 @@
 <template>
   <el-container class="news-container">
     <el-main>
+      <el-row class="result_title">
+        <el-col >
+          <el-input
+              v-model="input"
+              class="search-box"
+              placeholder="根据关键词查找新闻"
+              :suffix-icon="Search"
+              @input="getNewsList"
+          />
+        </el-col>
+      </el-row>
       <!-- 三个 NewsBlock 组件 -->
       <ADNewsBlock
           v-for="flash in currentNewsList"  :key="flash.id"
@@ -35,6 +46,7 @@
 <script>
 import ADNewsBlock from './ADNewsBlock.vue'
 import axios from "axios";
+import {Search} from "@element-plus/icons-vue";
 export default {
   name: "ADNewsBlockList",
   components: { ADNewsBlock },
@@ -49,18 +61,29 @@ export default {
       newsList: [],  // 全部新闻列表
       page: 1,       // 当前页码
       pageSize: 4,   // 每页新闻数
-      total: 0       // 总新闻数
+      total: 0,       // 总新闻数
+      input: ""
     }
   },
   computed: {
+    Search() {
+      return Search
+    },
     currentNewsList() {  // 计算当前页新闻列表，自动计算的，不用调用
-      if (this.newsList && this.total > 0) {
+      if (this.filteredNewsList && this.total > 0) {
         let start = (this.page - 1) * this.pageSize;
         let end = start + this.pageSize;
         return this.newsList.slice(start, end);
       } else {
         return []; // 如果 newsList 未定义或为空，返回空数组
       }
+    },
+    filteredNewsList() {
+      if (!this.input) {
+        return this.newsList;
+      }
+      const keyword = this.input.toLowerCase();
+      return this.newsList.filter(news => news.title.toLowerCase().includes(keyword));
     },
   },
   methods: {
@@ -120,5 +143,8 @@ export default {
   width: auto;
   display: flex;
   align-items: center;
+}
+.search-box {
+  padding-bottom: 1%;
 }
 </style>
