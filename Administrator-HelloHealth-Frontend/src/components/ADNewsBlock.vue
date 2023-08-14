@@ -97,7 +97,7 @@ export default {
         type: 'warning'
       }).then(() => {
         // 确定删除
-        axios.delete('/api/news/delete/${this.flash_id}')
+        axios.delete("/api/Flash/delete/"+this.flash_id)
             .then(res => {
               this.$emit('delete', this.flash_id)
             });

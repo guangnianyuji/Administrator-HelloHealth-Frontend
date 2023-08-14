@@ -149,7 +149,7 @@ export default defineComponent({
       }
       this.newFlashInfo.content = JSON.stringify(this.$refs.editor.editor.getJSON())
       console.log(this.newFlashInfo.content)
-      let response = await axios.post("/api/sendFlash",this.newFlashInfo)
+      let response = await axios.post("/api/Flash/sendFlash",this.newFlashInfo)
       let responseObj = response.data;
       if(responseObj.errorCode!==200) {
         ElMessage.error('发送失败，错误码：' + responseObj.errorCode);
@@ -204,7 +204,7 @@ export default defineComponent({
     },
   },
   mounted() { // mounted 时获取全部标签列表
-    axios.get("https://mock.apifox.cn/m1/2961538-0-default/api/childTags")
+    axios.get("/api/Flash/childTags")
         .then(response => {
           this.tags = response.data.data.tags;
         })

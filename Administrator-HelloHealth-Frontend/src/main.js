@@ -9,7 +9,7 @@ import App from './App.vue'
 import router from './router'
 import axios from "axios";
 
-axios.defaults.baseURL = "https://mock.apifox.cn/m1/2961538-0-default"
+//axios.defaults.baseURL = "https://mock.apifox.cn/m1/2961538-0-default"
 
 const app = createApp(App)
 app.use(ElementPlus)
