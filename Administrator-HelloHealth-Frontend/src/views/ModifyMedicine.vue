@@ -226,7 +226,7 @@ export default {
     },
     created() {
         axios
-            .get("/api/Administrator/medicine"+this.$route.query.medicine_id)
+            .post("/api/Administrator/medicine",{medicine_id:this.$route.query.medicine_id})
             .then(response => {
                 if (response.data.data.status) {
                     ElMessage.success('获取药品信息成功');
