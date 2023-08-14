@@ -73,7 +73,7 @@ export default {
             this.delete_dialog_visible = false;
         },
         deleteMedicine() {
-            axios.delete('/api/admin/medicine/' + this.medicine.medicine_id)
+            axios.delete('/api/Administrator/delMedicine' + this.medicine.medicine_id)
                 .then((res) => {
                     this.delete_dialog_visible = false;
                     console.log(res);
