@@ -20,7 +20,7 @@
         </el-form-item>
           
          <el-form-item label="楼层发布内容:">
-            {{ comment_info.content }}
+            <el-button @click="openContent">点击查看内容详情</el-button>
          </el-form-item>
 
          <el-form-item v-if="!is_checked" label="是否通过:">
@@ -157,12 +157,17 @@ export default{
         },
         cancel(){
             this.$emit('closeMe');    
+        },
+        openContent(){
+            console.log("opencontent")
+            this.$emit('openContent');
+             
         }
     },
     created()
     {
-        this.check_info.comment_id=comment_info.comment_id;
-        this.check_info.author_id=comment_info.author_id;
+        this.check_info.comment_id=this.comment_info.comment_id;
+        this.check_info.author_id=this.comment_info.author_id;
     }
 
 
