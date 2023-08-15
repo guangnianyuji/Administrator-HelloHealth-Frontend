@@ -22,7 +22,7 @@
                 {{report_info.post_id}}
             </div>
 
-            <GoToPostLink :floor_number="report_info.floor_number" :post_id="report_info.post_id"></GoToPostLink>
+            <GoToPostLink v-if="!is_checked" :floor_number="report_info.floor_number" :post_id="report_info.post_id"></GoToPostLink>
         </el-form-item>
 
         <el-form-item label="所属帖子标题:"  >
@@ -34,7 +34,7 @@
         </el-form-item>
           
          <el-form-item label="举报内容:">
-            {{ report_info.content }}
+            <el-button @click="openContent">点击查看内容详情</el-button>
          </el-form-item>
 
          <el-form-item label="举报理由:">
@@ -67,7 +67,7 @@
              {{report_info.report_back_time}}
         </el-form-item>
 
-        <el-form-item  v-if="is_checked" label="处理原因:">
+        <el-form-item  v-if="is_checked" label="处理结果:">
              {{report_info.report_respond}}
         </el-form-item>
 
@@ -83,6 +83,7 @@
                             </svg>    
             </el-button>
         </span>
+
  
 
 </template>
@@ -121,17 +122,20 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
 import GoToPostLink from "@/components/checkView/GoToPostLink.vue";
+import FancyButton from "@/components/FancyButton.vue";
+
 export default{
-    components: {GoToPostLink, UserInfoCardSmall},
+    components: {GoToPostLink, UserInfoCardSmall,FancyButton},
     props:["report_info","is_checked"],
-    emits:['closeMe','refresh'],
+    emits:['closeMe','refresh','openContent'],
     data:()=>({
         check_info:{
             report_id:0,
             is_deleted:false,
             is_blocked:false,
             report_respond:""
-        }
+        },
+         
     }),
     methods:{
         submit(){
@@ -157,12 +161,17 @@ export default{
         },
         cancel(){
             this.$emit('closeMe');    
+        },
+        openContent(){
+            console.log("opencontent")
+            this.$emit('openContent');
+             
         }
     },
     created(){
         
         this.check_info.report_id=this.report_info.report_id
-         
+        
     }
 
 

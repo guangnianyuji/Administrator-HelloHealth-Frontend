@@ -117,9 +117,9 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
 import GoToPostLink from "@/components/checkView/GoToPostLink.vue";
-
+import FancyButton from "@/components/FancyButton.vue";
 export default{
-    components: {GoToPostLink, UserInfoCardSmall},
+    components: {GoToPostLink, UserInfoCardSmall,FancyButton},
     props:["comment_info","is_checked"],
     emits:['closeMe','refresh'],
     data:()=>({
