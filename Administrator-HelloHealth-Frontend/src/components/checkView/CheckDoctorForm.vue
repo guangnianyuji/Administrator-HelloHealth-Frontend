@@ -126,16 +126,6 @@ export default{
     components: {UserInfoCardSmall},
     props:["doctor_info","is_checked"],
     emits:['closeMe','refresh'],
-    watch:
-        {
-            doctor_info:function(newData)
-            {
-                this.check_info.doctor_id=newData.doctor_id;
-                this.check_info.user_id=newData.user_id;
-            
-            },
-           
-        },
     data:()=>({
        
         doctorrule:{
@@ -200,6 +190,11 @@ export default{
             this.$emit('closeMe');    
         }
     },
+    created()
+    {
+        this.check_info.doctor_id=doctor_info.doctor_id;
+        this.check_info.user_id=doctor_info.user_id;
+    }
 
 
 }
