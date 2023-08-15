@@ -122,16 +122,6 @@ export default{
     components: {GoToPostLink, UserInfoCardSmall},
     props:["comment_info","is_checked"],
     emits:['closeMe','refresh'],
-    watch:
-        {
-            comment_info:function(newData)
-            {
-                this.check_info.comment_id=newData.comment_id;
-                this.check_info.author_id=newData.author_id;
-            
-            },
-           
-        },
     data:()=>({
         
         check_info:{
@@ -169,6 +159,11 @@ export default{
             this.$emit('closeMe');    
         }
     },
+    created()
+    {
+        this.check_info.comment_id=comment_info.comment_id;
+        this.check_info.author_id=comment_info.author_id;
+    }
 
 
 }
