@@ -37,6 +37,9 @@
             {{ report_info.content }}
          </el-form-item>
 
+         <el-form-item label="举报理由:">
+            {{ report_info.report_reason }}
+         </el-form-item>
 
 
          <el-form-item v-if="!is_checked" label="是否删除原评论内容:">
@@ -132,7 +135,7 @@ export default{
     }),
     methods:{
         submit(){
-            console.log(this.check_info)
+             
             axios.post("/api/Check/Report/Submit",this.check_info)
             .then((res)=> {
             let responseObj = res.data;
@@ -159,7 +162,7 @@ export default{
     created(){
         
         this.check_info.report_id=this.report_info.report_id
-        console.log(this.check_info.report_id)
+         
     }
 
 

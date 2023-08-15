@@ -112,6 +112,7 @@ export default{
                 report_info.floor_number=res.data.data.floor_number;
                 report_info.content=res.data.data.content;
                 report_info.report_respond=res.data.data.report_respond;
+                report_info.report_reason=res.data.data.report_reason;
             })
             .then(()=>{
                  console.log(report_info);
