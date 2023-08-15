@@ -6,7 +6,7 @@
          </el-form-item>
 
          <el-form-item label="发布时间:">
-            {{ report_info.report_time }}
+            {{ report_info.comment_time }}
         </el-form-item>
 
         <el-form-item label="举报用户:">

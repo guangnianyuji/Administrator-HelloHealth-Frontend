@@ -521,7 +521,7 @@ export default {
         submitNewInfo() {
             //当所有必填项都不为空时，才提交数据
             if(this.checkRequired()) {
-                axios.post('/api/admin/medicine', this.medicine)
+                axios.post('/api/Administrator/addMedicine', this.medicine)
                     .then(response => {
                         if (response.data.data.state) {
                             console.log("Successfully submitted medicine data:", response.data.data.message);

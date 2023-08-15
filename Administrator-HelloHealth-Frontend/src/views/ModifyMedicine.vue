@@ -197,7 +197,7 @@ export default {
                 this.modified.is_prescription_medicine = this.is_prescription_medicine ? '处方药物' : '非处方药物';
                 console.log(this.modified.is_medical_insurance_medicine);
                 console.log(this.modified.is_prescription_medicine);
-                axios.post("/api/admin/medicine/" + this.modified.medicine_id, this.modified)
+                axios.post("/api/Administrator/modifyMedicine", this.modified)
                     .then(response => {
                         if (response.data.data.status) {
                             ElMessage.success('修改成功');
@@ -226,7 +226,7 @@ export default {
     },
     created() {
         axios
-            .get("/api/admin/medicine/"+this.$route.query.medicine_id)
+            .post("/api/Administrator/medicine",{medicine_id:this.$route.query.medicine_id})
             .then(response => {
                 if (response.data.data.status) {
                     ElMessage.success('获取药品信息成功');

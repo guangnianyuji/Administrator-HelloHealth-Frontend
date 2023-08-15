@@ -37,15 +37,14 @@ const notificationButtonClicked = () => {
 
 const avatarClicked = () =>{
     if(isLogin.value){
-        //TODO
-        alert("跳转到个人主页！")
+
     }else{
         router.push("/login")
     }
 }
 
 const menus = [
-    {"title":"个人信息","icon":"fi-rr-user-gear","path":"/"},
+    {"title":"个人信息","icon":"fi-rr-user-gear","path":"/adminiInfo"},
     {
         "title":"审核","icon":"fi-rr-memo-circle-check","path":"censorSubMenu",
         "children":[
@@ -74,21 +73,28 @@ let userInfo = reactive({
 const isLogin = ref(false);
 
 (async ()=>{
-    let response = await axios.get("/api/UserInfo")
+    let response = await axios.get("/api/Administrator/Details")
 
     if(response.data.errorCode!==200) return;
     let responseObj = response.data.data
-    isLogin.value = responseObj.login;
+    isLogin.value = responseObj.isLogin;
 
-    if(!responseObj.login){
+    if(!responseObj.isLogin){
         // 管理员没登陆啥都干不了，直接跳到登录界面
         ElMessage.error("登录状态失效，请重新登录。")
         await router.push("/login");
         return;
     }
     globalData.login = true;
-    userInfo.data = responseObj
-    globalData.userInfo = userInfo.data
+    globalData.userInfo = {
+        user_id: responseObj.administrator.id,
+        user_name: responseObj.administrator.name,
+        avatar_url: responseObj.administrator.portrait,
+        user_group: "admin"
+    }
+    userInfo.data = globalData.userInfo
+    console.log(globalData.userInfo)
+    console.log(responseObj.administrator)
 })()
 
 const getSidebarPath = () => {

@@ -176,7 +176,7 @@ export default {
             console.log("我更新了！")
             this.isLoading = true
             axios({
-                url: "/api/admin/medicine/list",
+                url: "/api/Administrator/medicineList",
                 method: "get",
             }).then((res) => {
                 console.log("已获取到数据");
