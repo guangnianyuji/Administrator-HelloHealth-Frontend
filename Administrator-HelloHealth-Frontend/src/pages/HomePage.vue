@@ -72,19 +72,9 @@ let userInfo = reactive({
 
 const isLogin = ref(false);
 
-(async ()=>{
-    let response = await axios.get("/api/Administrator/Details")
-
-    if(response.data.errorCode!==200) return;
-    let responseObj = response.data.data
+axios.get("/api/Administrator/Details").then(async(res) =>{
+    let responseObj = res.json;
     isLogin.value = responseObj.isLogin;
-
-    if(!responseObj.isLogin){
-        // 管理员没登陆啥都干不了，直接跳到登录界面
-        ElMessage.error("登录状态失效，请重新登录。")
-        await router.push("/login");
-        return;
-    }
     globalData.login = true;
     globalData.userInfo = {
         user_id: responseObj.administrator.id,
@@ -93,9 +83,19 @@ const isLogin = ref(false);
         user_group: "admin"
     }
     userInfo.data = globalData.userInfo
-    console.log(globalData.userInfo)
-    console.log(responseObj.administrator)
-})()
+}).catch(error => {
+    if(error.network) return;
+    switch (error.errorCode){
+        case 103:
+            // 管理员没登陆啥都干不了，直接跳到登录界面
+            ElMessage.error("登录状态失效，请重新登录。")
+            router.push("/login");
+            break;
+        default:
+            error.defaultHandler("获取登录状态出错")
+    }
+})
+
 
 const getSidebarPath = () => {
     let path = router.currentRoute.value.path.split("/")

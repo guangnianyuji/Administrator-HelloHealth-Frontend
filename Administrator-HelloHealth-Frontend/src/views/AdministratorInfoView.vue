@@ -150,7 +150,13 @@ export default {
           this.administrator = responseData
         })
         .catch(error => {
-          console.error(error)
+            if(error.network) return;
+            switch (error.errorCode){
+                case 103:
+                    break;
+                default:
+                    error.defaultHandler("获取登录状态出错")
+            }
         });
   },
   computed: {

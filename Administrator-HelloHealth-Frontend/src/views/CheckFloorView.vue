@@ -95,7 +95,8 @@
         title="内容详情"
         align-center
         >
-        <TipTapEditorReadonly :contentJsonString="selected_comment.content"></TipTapEditorReadonly>
+        <!--用vif unmount和重新mount TipTapEditorReadonly达到每次打开内容都能刷新的目的-->
+        <TipTapEditorReadonly v-if="detailContentVisible" :contentJsonString="selected_comment.content"></TipTapEditorReadonly>
         
     </el-dialog>
 
@@ -107,10 +108,12 @@ import axios from "axios";
 import CheckFloorForm from "../components/checkView/CheckFloorForm.vue"
 import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
 import FancyButton from "@/components/FancyButton.vue";
+import TipTapEditorReadonly from "@/components/postView/TipTapEditorReadonly.vue";
 export default{
 
     components:
         {
+            TipTapEditorReadonly,
             FancyButton,
             UserInfoCardSmall,
             CheckFloorForm 
@@ -121,7 +124,7 @@ export default{
         comment_list:[],
         checkDialogVisible:false,
         detailContentVisible:false,
-        selected_comment:[]
+        selected_comment: undefined
     }),
     methods:
     {
@@ -131,11 +134,12 @@ export default{
                 comment_info.post_id=res.data.data.post_id; 
                 comment_info.floor_number=res.data.data.floor_number; 
                 comment_info.content=res.data.data.content;    
-                
+                this.selected_comment = comment_info;
+                this.checkDialogVisible = true
             })
-            .then(()=>{
-                this.selected_comment=comment_info;
-                this.checkDialogVisible=true;
+            .catch(error => {
+                if(error.network) return;
+                error.defaultHandler("获取审核信息出错")
             })
 
            

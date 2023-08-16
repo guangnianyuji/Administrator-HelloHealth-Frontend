@@ -92,7 +92,7 @@
         title="内容详情"
         align-center
         >
-        <TipTapEditorReadonly :contentJsonString="selected_report.content"></TipTapEditorReadonly>
+        <TipTapEditorReadonly v-if="detailContentVisible" :contentJsonString="selected_report.content"></TipTapEditorReadonly>
         
     </el-dialog>
 

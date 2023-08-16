@@ -121,7 +121,7 @@ import FancyButton from "@/components/FancyButton.vue";
 export default{
     components: {GoToPostLink, UserInfoCardSmall,FancyButton},
     props:["comment_info","is_checked"],
-    emits:['closeMe','refresh'],
+    emits:['closeMe','refresh',"openContent"],
     data:()=>({
         
         check_info:{

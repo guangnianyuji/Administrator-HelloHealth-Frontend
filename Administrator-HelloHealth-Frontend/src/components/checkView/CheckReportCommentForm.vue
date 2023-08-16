@@ -60,7 +60,7 @@
 
          
         <el-form-item  v-if="!is_checked" label="处理原因:">
-            <el-input v-model="check_info.report_respond" class="input" placeholder="请输入处理原因"/>
+            <el-input v-model="check_info.report_respond" placeholder="请输入处理原因"/>
         </el-form-item>
      
         <el-form-item  v-if="is_checked" label="处理时间:">
