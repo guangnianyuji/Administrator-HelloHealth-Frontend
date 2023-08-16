@@ -20,7 +20,7 @@
         </el-form-item>
           
          <el-form-item label="楼层发布内容:">
-            <el-button @click="openContent">点击查看内容详情</el-button>
+            <FancyButton @click="openContent">点击查看内容详情</FancyButton>
          </el-form-item>
 
          <el-form-item v-if="!is_checked" label="是否通过:">

@@ -34,7 +34,7 @@
         </el-form-item>
           
          <el-form-item label="举报内容:">
-            <el-button @click="openContent">点击查看内容详情</el-button>
+            <FancyButton @click="openContent">查看内容详情</FancyButton>
          </el-form-item>
 
          <el-form-item label="举报理由:">
