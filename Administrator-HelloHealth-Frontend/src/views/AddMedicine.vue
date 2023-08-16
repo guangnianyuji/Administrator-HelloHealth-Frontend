@@ -523,7 +523,7 @@ export default {
             if(this.checkRequired()) {
                 axios.post('/api/Administrator/addMedicine', this.medicine)
                     .then(response => {
-                        if (response.data.data.state) {
+                        if (response.data.data.status) {
                             console.log("Successfully submitted medicine data:", response.data.data.message);
                             console.log(this.medicine);
                             ElMessage({
