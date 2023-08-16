@@ -18,13 +18,13 @@
     <el-table :data="report_list" border style="width: 100%" height="400" empty-text="暂无举报内容">
  
 
-        <el-table-column label="发布用户" width="200" align="center">
+        <el-table-column label="发布用户" :width="display_width" align="center">
             <template #default="scope">
                 <UserInfoCardSmall :avatar-url="scope.row.author_portrait" :user-name="scope.row.author_name" :user-id="scope.row.author_id"></UserInfoCardSmall>
             </template>
         </el-table-column>
 
-        <el-table-column label="发布时间" width="200" align="center">
+        <el-table-column label="发布时间" :width="display_width" align="center">
             <template #default="scope">
                                    
                 {{ scope.row.comment_time }}
@@ -32,13 +32,13 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="举报用户" width="200" align="center">
+        <el-table-column label="举报用户" :width="display_width" align="center">
             <template #default="scope">
                 <UserInfoCardSmall :avatar-url="scope.row.user_portrait" :user-name="scope.row.user_name" :user-id="scope.row.user_id"></UserInfoCardSmall>
             </template>
         </el-table-column>
 
-        <el-table-column label="举报时间" width="200" align="center">
+        <el-table-column label="举报时间" :width="display_width" align="center">
             <template #default="scope">
                                    
                 {{ scope.row.report_time }}
@@ -47,9 +47,15 @@
         </el-table-column>
 
         <!--已处理-->
-        <el-table-column v-if="type_sort.type=='checked'" label="处理管理员ID" align="center">
+        <el-table-column v-if="type_sort.type=='checked'" :width="display_width" label="处理管理员ID" align="center">
             <template #default="scope">
                 {{ scope.row.administrator_id }}
+            </template>
+        </el-table-column>
+
+        <el-table-column v-if="type_sort.type=='checked'"  :width="display_width" label="处理时间" align="center">
+            <template #default="scope">
+                {{ scope.row.report_back_time }}
             </template>
         </el-table-column>
     
@@ -76,7 +82,18 @@
         top="0"
         class="checkform"
     >
-        <CheckReportCommentForm :report_info="selected_report" :is_checked="type_sort.type=='checked'" @refresh="display" @close-me="checkDialogVisible=false"/>
+        <CheckReportCommentForm :report_info="selected_report" :is_checked="type_sort.type=='checked'" @open-content="openDetail" @refresh="display" @close-me="checkDialogVisible=false"/>
+    </el-dialog>
+
+    <el-dialog
+        v-model="detailContentVisible"
+        width="70%"
+        top="0"
+        title="内容详情"
+        align-center
+        >
+        <TipTapEditorReadonly v-if="detailContentVisible" :contentJsonString="selected_report.content"></TipTapEditorReadonly>
+        
     </el-dialog>
 
 </template>
@@ -87,20 +104,25 @@ import axios from "axios";
 import CheckReportCommentForm from "../components/checkView/CheckReportCommentForm.vue"
 import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
 import FancyButton from "@/components/FancyButton.vue";
+import TipTapEditorReadonly from "../components/postView/TipTapEditorReadonly.vue";
 export default{
 
     components:
         {
             FancyButton,
             UserInfoCardSmall,
-            CheckReportCommentForm
+            CheckReportCommentForm,
+            TipTapEditorReadonly
         },
     data:()=>({
         type_sort:{type:"unchecked"},
         
         report_list:[],
         checkDialogVisible:false,
-        selected_report:[]
+        detailContentVisible:false,
+        
+        selected_report:[],
+        display_width:160,//控制每列宽度
     }),
     methods:
     {
@@ -139,6 +161,12 @@ export default{
                 })
 
         },
+        openDetail(){
+            console.log("openDetail")
+            console.log(this.selected_report.content)
+            this.detailContentVisible=true;
+             
+        }
  
     },
     created(){
@@ -154,6 +182,7 @@ export default{
    font-size: xx-large;
    margin-left: 10%;
    margin-top:5%;
+   font-weight: bold;
 }
 
 .forum-title {

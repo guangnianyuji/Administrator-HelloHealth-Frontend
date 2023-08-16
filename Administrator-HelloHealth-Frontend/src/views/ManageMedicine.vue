@@ -1,9 +1,5 @@
 <template>
-    <div
-            class="school-center-layout"
-            v-loading.fullscreen.lock="isLoading"
-            element-loading-text="正在加载"
-    />
+
     <div class="MM_body">
         <el-card class="MM_title">
             <el-row>

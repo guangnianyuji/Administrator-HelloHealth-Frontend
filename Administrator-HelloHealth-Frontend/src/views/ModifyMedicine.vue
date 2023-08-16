@@ -76,7 +76,7 @@
 
             <el-row class="info-input" v-for="item in fieldInfo">
                 <el-col :span="6">
-                    <div class="input-hint">{{item.name}}：</div>
+                    <div class="input-hint">{{item.name}}:</div>
                 </el-col>
                 <el-col :span="13">
                     <div class="input-hint">
@@ -183,7 +183,16 @@ export default {
     methods:{
         check(){
             //药品中文名称、药品分类、药品厂商、药品剂型、药品成分、药品用法、药品适应症、药品禁忌、是否为处方药、是否为医保药，不可为空！
-            if(this.modified.medicine_ch_name===''||this.modified.medicine_category===''||this.modified.medicine_manufacturer===''||this.modified.medicine_form===''||this.modified.medicine_ingredient===''||this.modified.medicine_usage===''||this.modified.medicine_indications===''||this.modified.medicine_taboo===''||this.modified.is_prescription_medicine===''||this.modified.is_medical_insurance_medicine===''){
+            if(this.medicineInfo.medicine_ch_name===''||
+            this.medicineInfo.medicine_category===''||
+            this.medicineInfo.medicine_manufacturer===''||
+            this.medicineInfo.medicine_form===''||
+            this.medicineInfo.medicine_ingredient===''||
+            this.medicineInfo.medicine_usage===''||
+            this.medicineInfo.medicine_indications===''||
+            this.medicineInfo.medicine_taboo===''||
+            this.medicineInfo.is_prescription_medicine===''||
+            this.medicineInfo.is_medical_insurance_medicine===''){
                 ElMessage.error('请填写完整信息！');
                 return false;
             }else{
@@ -191,13 +200,14 @@ export default {
             }
         },
         submit(){
+            console.log("提交")
             if(this.check()) {
                 console.log(this.modified);
-                this.modified.is_medical_insurance_medicine = this.is_medical_insurance_medicine ? '医保药物' : '非医保药物';
-                this.modified.is_prescription_medicine = this.is_prescription_medicine ? '处方药物' : '非处方药物';
-                console.log(this.modified.is_medical_insurance_medicine);
-                console.log(this.modified.is_prescription_medicine);
-                axios.post("/api/Administrator/modifyMedicine", this.modified)
+                this.medicineInfo.is_medical_insurance_medicine = this.is_medical_insurance_medicine ? '是' : '否';
+                this.medicineInfo.is_prescription_medicine = this.is_prescription_medicine ? '是' : '否';
+                console.log(this.medicineInfo.is_medical_insurance_medicine);
+                console.log(this.medicineInfo.is_prescription_medicine);
+                axios.post("/api/Administrator/modifyMedicine", this.medicineInfo)
                     .then(response => {
                         if (response.data.data.status) {
                             ElMessage.success('修改成功');
@@ -216,11 +226,14 @@ export default {
         startEdit(fieldKey, editingName){
             this.editingFieldKey = fieldKey
             this.editingName = editingName
-            this.modified = this.medicineInfo[this.editingFieldKey].valueOf()
+            console.log(this.editingFieldKey)
+            this.modified = this.medicineInfo[this.editingFieldKey]!=null?this.medicineInfo[this.editingFieldKey].valueOf():null;
             this.centerDialogVisible = true
         },
         endEdit(){
+            console.log(this.modified)
             this.medicineInfo[this.editingFieldKey] = this.modified;
+            console.log(this.editingFieldKey)
             this.centerDialogVisible = false;
         }
     },
@@ -233,9 +246,9 @@ export default {
                     console.log("Successfully get medicine data");
                     console.log(response.data.data.medicineDetail);
                     this.medicineInfo = response.data.data.medicineDetail;
-                    this.modified= this.medicineInfo;//一开始modified等于medicineInfo
-                    this.is_medical_insurance_medicine=!this.modified.is_medical_insurance_medicine.includes('非');
-                    this.is_prescription_medicine=!this.modified.is_prescription_medicine.includes('非');
+                
+                    this.is_medical_insurance_medicine=this.medicineInfo.is_medical_insurance_medicine.includes('是');
+                    this.is_prescription_medicine=this.medicineInfo.is_prescription_medicine.includes('是');
                 } else {
                     console.error("Error getting medicine data:", response.data.errorCode);
                     ElMessage.error('获取失败：' + response.data.errorCode)
