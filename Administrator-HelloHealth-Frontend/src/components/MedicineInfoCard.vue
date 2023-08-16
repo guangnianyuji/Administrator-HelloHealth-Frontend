@@ -10,8 +10,8 @@
                     <el-row class="M_title">{{ medicine.medicine_ch_name }}（{{ medicine.medicine_en_name }}）</el-row>
                     <div class="content">类别：{{ medicine.medicine_category }}</div>
                     <div class="content">厂商：{{ medicine.medicine_manufacturer }}</div>
-                    <div class="content">是否医保药：{{ medicine.is_medical_insurance_medicine.includes('非') ? "否":"是"   }}</div>
-                    <div class="content">是否处方：{{ medicine.is_prescription_medicine.includes('非') ?  "否"  :"是"}}</div>
+                    <div class="content">是否医保药：{{ medicine.is_medical_insurance_medicine.includes('是') ? "是":"否"   }}</div>
+                    <div class="content">是否处方：{{ medicine.is_prescription_medicine.includes('是') ?  "是":"否"}}</div>
                     <div class="content">适应症：{{ medicine.medicine_indications  }}</div>
                 </el-col>
                 <el-col :span="3">
@@ -73,7 +73,7 @@ export default {
             this.delete_dialog_visible = false;
         },
         deleteMedicine() {
-            axios.delete('/api/Administrator/delMedicine' + this.medicine.medicine_id)
+            axios.post('/api/Administrator/delMedicine' ,{ params:{medicine_id:this.medicine.medicine_id}})
                 .then((res) => {
                     this.delete_dialog_visible = false;
                     console.log(res);
@@ -82,7 +82,7 @@ export default {
                         console.log(res.data.data.status);
                         this.$emit("deletesuccess", true);
                     } else {
-                        ElMessage.error("删除失败!" + res.data.data.errorCode);
+                        ElMessage.error("删除失败!" + res.data.errorCode);
                     }
                 })
                 .catch(error => {
@@ -91,7 +91,9 @@ export default {
                 });
         }
     },
-
+    created(){
+        console.log(this.medicine)
+    }
 
 }
 </script>

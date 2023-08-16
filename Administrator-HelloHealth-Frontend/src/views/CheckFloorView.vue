@@ -85,7 +85,18 @@
         top="0"
         class="checkform"
     >
-        <CheckFloorForm :comment_info="selected_comment" :is_checked="type_sort.type=='checked'" @refresh="display" @close-me="checkDialogVisible=false"/>
+        <CheckFloorForm :comment_info="selected_comment" :is_checked="type_sort.type=='checked'" @open-content="openDetail" @refresh="display" @close-me="checkDialogVisible=false"/>
+    </el-dialog>
+
+    <el-dialog
+        v-model="detailContentVisible"
+        width="70%"
+        top="0"
+        title="内容详情"
+        align-center
+        >
+        <TipTapEditorReadonly :contentJsonString="selected_comment.content"></TipTapEditorReadonly>
+        
     </el-dialog>
 
 </template>
@@ -109,6 +120,7 @@ export default{
         
         comment_list:[],
         checkDialogVisible:false,
+        detailContentVisible:false,
         selected_comment:[]
     }),
     methods:
@@ -153,7 +165,13 @@ export default{
                 else{
                     return title.slice(0,12)+"...";
                 }
-            }
+            },
+        openDetail(){
+            console.log("openDetail")
+            console.log(this.selected_comment.content)
+            this.detailContentVisible=true;
+             
+        }
     },
     created(){
         this.display();
