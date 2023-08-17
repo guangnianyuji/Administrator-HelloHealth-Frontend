@@ -21,6 +21,7 @@
           :flash_title="flash.title"
           :flash_date="flash.date"
           :flash_content="flash.content"
+          :flash_preview="flash.preview"
           :flash_image="flash.image"
           :flash_tags_list="flash.tags"
           :flash_id="flash.id"
@@ -34,7 +35,7 @@
           background
           v-model:page="page"
           :page-size="pageSize"
-          :total="total"
+          :total="+filteredNewsListTotal"
           layout="prev, pager, next"
           @current-change="handlePageChange"
       />
@@ -60,7 +61,6 @@ export default {
       newsList: [],  // 全部新闻列表
       page: 1,       // 当前页码
       pageSize: 4,   // 每页新闻数
-      total: 0,       // 总新闻数
       input: ""
     }
   },
@@ -101,8 +101,8 @@ export default {
         this.page--;
       }
     },
-    onEdit(flash_id, title, content, tags) {
-      this.$emit('edit', flash_id, title, content, tags);
+    onEdit(flash_id, title, json, tags) {
+      this.$emit('edit', flash_id, title, json, tags);
     },
     getNewsList() {
       const apiUrl = this.selectedTagId
@@ -111,12 +111,26 @@ export default {
       axios.get(apiUrl)
           .then(res => {
             this.newsList = res.data.data.newsList;    // 获取全部新闻列表
-            this.total = this.newsList.length;         // 总新闻数
+            this.newsList.forEach(item => {
+              item.preview = this.getContentText(item.content)
+            })
           })
+    },
+    getContentText(contentJson) {
+      contentJson = JSON.parse(contentJson);
+      let paragraphs = [];
+      if (contentJson && Array.isArray(contentJson.content)) {
+        for (const block of contentJson.content) {
+          if (block.type === 'paragraph') {
+            let paragraph = block.content.map(node => node.text).join(' ');
+            paragraphs.push(paragraph);
+          }
+        }
+      }
+      return paragraphs.join(' ');
     },
     addNews(newNews) {
       this.newsList.push(newNews);
-      this.total = this.newsList.length;
     },
     updateNews(newNews) {
       // 在 newsList 中找到相同 id 的新闻，然后进行更新

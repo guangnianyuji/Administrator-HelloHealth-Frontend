@@ -101,7 +101,6 @@ export default defineComponent({
       newFlashInfo: {
         flash_being_edited_id: -1,
         title:"",
-        introduction:"",
         content: "",
         tags: []
       },
@@ -117,6 +116,7 @@ export default defineComponent({
         content: "",
         tags: []
       };
+      this.$refs.editor.editor.commands.clearContent();
     },
     handleTagSelected(tagId) {
       this.selectedTagId = tagId;
@@ -131,11 +131,12 @@ export default defineComponent({
       };
       // 一旦对话框打开，直接设置内容
       this.$nextTick(() => {
-        this.$refs.editor.editor.commands.setContent(content);
+        let contentJson = JSON.parse(content);  // 将字符串解析为 JSON 对象
+        this.$refs.editor.editor.commands.setContent(contentJson);
       });
     },
     async submitNewFlash() {
-      if(this.$refs.editor.editor.state.doc.textContent.length < 15) {
+      if(this.$refs.editor.editor.state.doc.textContent.length < 5) {
         ElMessage.error('请输入更多内容。');
         return;
       }
@@ -148,7 +149,7 @@ export default defineComponent({
         return;
       }
       this.newFlashInfo.content = JSON.stringify(this.$refs.editor.editor.getJSON())
-      console.log(this.newFlashInfo.content)
+
       let response = await axios.post("/api/Flash/sendFlash",this.newFlashInfo)
       let responseObj = response.data;
       if(responseObj.errorCode!==200) {
@@ -167,7 +168,7 @@ export default defineComponent({
         id: this.newFlashInfo.flash_being_edited_id,
         image: this.getCoverImageUrl(this.newFlashInfo.content),
         title: this.newFlashInfo.title,
-        content: this.getContentText(this.newFlashInfo.content),
+        content: this.newFlashInfo.content,
         tags: this.newFlashInfo.tags,
       };
 
@@ -186,17 +187,6 @@ export default defineComponent({
         for (const contentObj of contentJson.content) {
           if (contentObj.type === 'image') {
             return contentObj.attrs.src;
-          }
-        }
-      }
-      return '';
-    },
-    getContentText(contentJson) {
-      contentJson = JSON.parse(contentJson);
-      if (contentJson && Array.isArray(contentJson.content)) {
-        for (const contentObj of contentJson.content) {
-          if (contentObj.type === 'paragraph') {
-            return contentObj.content[0].text;
           }
         }
       }
@@ -242,20 +232,6 @@ export default defineComponent({
     border-radius: 2px;
     transform: translate(-16px , -50%);
 }
-.news-block {
-  display: flex;
-  justify-content: left;
-  margin-top: 3%;
-  margin-left: 3%;
-}
-.new-card {
-  height: 130px;
-  width: 950px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .manage-wrapper{
   width:fit-content;
   display: flex;
