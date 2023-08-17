@@ -12,7 +12,6 @@
               class="search-box"
               placeholder="根据关键词查找新闻"
               :suffix-icon="Search"
-              @input="getNewsList"
           />
         </el-col>
       </el-row>
@@ -69,13 +68,13 @@ export default {
     Search() {
       return Search
     },
-    currentNewsList() {  // 计算当前页新闻列表，自动计算的，不用调用
-      if (this.filteredNewsList && this.total > 0) {
+    currentNewsList() {
+      if (this.filteredNewsList && this.filteredNewsListTotal > 0) {
         let start = (this.page - 1) * this.pageSize;
         let end = start + this.pageSize;
-        return this.newsList.slice(start, end);
+        return this.filteredNewsList.slice(start, end);
       } else {
-        return []; // 如果 newsList 未定义或为空，返回空数组
+        return [];
       }
     },
     filteredNewsList() {
@@ -84,6 +83,9 @@ export default {
       }
       const keyword = this.input.toLowerCase();
       return this.newsList.filter(news => news.title.toLowerCase().includes(keyword));
+    },
+    filteredNewsListTotal() {
+      return this.filteredNewsList.length;
     },
   },
   methods: {
@@ -104,8 +106,8 @@ export default {
     },
     getNewsList() {
       const apiUrl = this.selectedTagId
-          ? `/api/Flash/newsByTag/${this.selectedTagId}?id=`
-          : "/api/Flash/newsByTag/-1?id=";//如果没有选择标签，就传给后端-1，后端返回全部资讯
+          ? `/api/Flash/newsByTag/${this.selectedTagId}?`
+          : "/api/Flash/newsByTag/-1?";//如果没有选择标签，就传给后端-1，后端返回全部资讯
       axios.get(apiUrl)
           .then(res => {
             this.newsList = res.data.data.newsList;    // 获取全部新闻列表
