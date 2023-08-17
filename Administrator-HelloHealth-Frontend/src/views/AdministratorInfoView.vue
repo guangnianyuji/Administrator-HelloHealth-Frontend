@@ -74,7 +74,7 @@
                 </div>
               </template>
               <!--从数据库获取管理员的名称-->
-              <el-input v-model="administrator.name" :disabled="!isEdit"></el-input>
+                <span class="idStyle">{{administrator.name}}</span>
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>
@@ -83,7 +83,7 @@
                 </div>
               </template>
               <!--从数据库获取管理员的联系方式-->
-              <el-input v-model="administrator.telephone" :disabled="!isEdit"></el-input>
+                <span class="idStyle">{{administrator.telephone}}</span>
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>
@@ -121,6 +121,7 @@
 import { ElMessage } from "element-plus";
 import axios from "axios"
 import NewsBlockList from "@/components/NewsBlockList.vue";
+import globalData from "@/global/global"
 export default {
   name: "AdministratorInfoView",
   components: {NewsBlockList},
@@ -143,14 +144,19 @@ export default {
       this.$router.replace("/error");
       return;
     }
-    //TODO 这个地方应该用团队里面的api
     axios.get('/api/Administrator/Details')
         .then(response => {
           const responseData = response.data.data.administrator;
           this.administrator = responseData
         })
         .catch(error => {
-          console.error(error)
+            if(error.network) return;
+            switch (error.errorCode){
+                case 103:
+                    break;
+                default:
+                    error.defaultHandler("获取登录状态出错")
+            }
         });
   },
   computed: {
@@ -181,16 +187,12 @@ export default {
     save(){
       // 将修改后的管理员信息保存到数据库
       axios
-          .post('/api/modifyAdministratorInfo')
+          .post('/api/Administrator/modifyAdministratorInfo',{email: this.administrator.email})
           .then(response => {
             // 保存成功后将isEdit变量设置为false，禁用编辑模式
-            this.isEdit = false;
                 let user_info={
                   //工号，名称，联系方式，邮箱
-                  id:this.administrator.id,
-                  name :this.administrator.name,
                   email:this.administrator.email,
-                  telephone:this.administrator0.telephone,
                 };
                 if(response.data.data.status == true){
                   ElMessage({
@@ -199,6 +201,7 @@ export default {
                     duration: 2000,
                     showClose: true,
                   });
+                    this.isEdit = false;
                   //store.commit("changePersonInfo", user_info);
                 } else {
                   ElMessage({
@@ -230,6 +233,9 @@ export default {
             if(response.data.data.status == true){
               ElMessage.success("更改成功！");
               this.photoUpload = false;
+              this.administrator.portrait = response.data.data.url;
+              globalData.userInfo.avatar_url = response.data.data.url;
+              location.reload()
             }
             else{
               ElMessage.error("更改失败！");

@@ -20,7 +20,7 @@
         </el-form-item>
           
          <el-form-item label="楼层发布内容:">
-            {{ comment_info.content }}
+            <FancyButton @click="openContent">点击查看内容详情</FancyButton>
          </el-form-item>
 
          <el-form-item v-if="!is_checked" label="是否通过:">
@@ -117,21 +117,11 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
 import GoToPostLink from "@/components/checkView/GoToPostLink.vue";
-
+import FancyButton from "@/components/FancyButton.vue";
 export default{
-    components: {GoToPostLink, UserInfoCardSmall},
+    components: {GoToPostLink, UserInfoCardSmall,FancyButton},
     props:["comment_info","is_checked"],
-    emits:['closeMe','refresh'],
-    watch:
-        {
-            comment_info:function(newData)
-            {
-                this.check_info.comment_id=newData.comment_id;
-                this.check_info.author_id=newData.author_id;
-            
-            },
-           
-        },
+    emits:['closeMe','refresh',"openContent"],
     data:()=>({
         
         check_info:{
@@ -147,6 +137,8 @@ export default{
             if(this.check_info.is_passed){
                 this.check_info.is_blocked=false;
             }
+            console.log(this.check_info.comment_id)
+            
             axios.post("/api/Check/Floor/Submit",this.check_info)
             .then((res)=> {
             let responseObj = res.data;
@@ -164,11 +156,23 @@ export default{
             this.$emit('closeMe'); 
             this.$emit('refresh'); 
         });
+    
         },
         cancel(){
             this.$emit('closeMe');    
+        },
+        openContent(){
+            console.log("opencontent")
+            this.$emit('openContent');
+             
         }
     },
+    created()
+    {
+        this.check_info.comment_id=this.comment_info.comment_id;
+        this.check_info.author_id=this.comment_info.author_id;
+        console.log(this.check_info.comment_id)
+    }
 
 
 }

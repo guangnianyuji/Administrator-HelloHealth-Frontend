@@ -85,7 +85,7 @@
         top="0"
         class="checkform"
     >
-        <CheckDoctorForm :doctor_info="selected_doctor" :is_checked="type_sort.type=='checked'" @refresh="display" @close-me="checkDialogVisible=false"/>
+        <CheckDoctorForm v-if="checkDialogVisible" :doctor_info="selected_doctor" :is_checked="type_sort.type=='checked'" @refresh="display" @close-me="checkDialogVisible=false"/>
     </el-dialog>
 
 </template>

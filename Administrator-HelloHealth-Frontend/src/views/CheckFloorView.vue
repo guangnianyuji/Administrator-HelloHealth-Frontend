@@ -85,7 +85,19 @@
         top="0"
         class="checkform"
     >
-        <CheckFloorForm :comment_info="selected_comment" :is_checked="type_sort.type=='checked'" @refresh="display" @close-me="checkDialogVisible=false"/>
+        <CheckFloorForm v-if="checkDialogVisible" :comment_info="selected_comment" :is_checked="type_sort.type=='checked'" @open-content="openDetail" @refresh="display" @close-me="checkDialogVisible=false"/>
+    </el-dialog>
+
+    <el-dialog
+        v-model="detailContentVisible"
+        width="70%"
+        top="0"
+        title="内容详情"
+        align-center
+        >
+        <!--用vif unmount和重新mount TipTapEditorReadonly达到每次打开内容都能刷新的目的-->
+        <TipTapEditorReadonly v-if="detailContentVisible" :contentJsonString="selected_comment.content"></TipTapEditorReadonly>
+        
     </el-dialog>
 
 </template>
@@ -96,10 +108,12 @@ import axios from "axios";
 import CheckFloorForm from "../components/checkView/CheckFloorForm.vue"
 import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
 import FancyButton from "@/components/FancyButton.vue";
+import TipTapEditorReadonly from "@/components/postView/TipTapEditorReadonly.vue";
 export default{
 
     components:
         {
+            TipTapEditorReadonly,
             FancyButton,
             UserInfoCardSmall,
             CheckFloorForm 
@@ -109,7 +123,8 @@ export default{
         
         comment_list:[],
         checkDialogVisible:false,
-        selected_comment:[]
+        detailContentVisible:false,
+        selected_comment: undefined
     }),
     methods:
     {
@@ -119,11 +134,12 @@ export default{
                 comment_info.post_id=res.data.data.post_id; 
                 comment_info.floor_number=res.data.data.floor_number; 
                 comment_info.content=res.data.data.content;    
-                
+                this.selected_comment = comment_info;
+                this.checkDialogVisible = true
             })
-            .then(()=>{
-                this.selected_comment=comment_info;
-                this.checkDialogVisible=true;
+            .catch(error => {
+                if(error.network) return;
+                error.defaultHandler("获取审核信息出错")
             })
 
            
@@ -153,7 +169,13 @@ export default{
                 else{
                     return title.slice(0,12)+"...";
                 }
-            }
+            },
+        openDetail(){
+            console.log("openDetail")
+            console.log(this.selected_comment.content)
+            this.detailContentVisible=true;
+             
+        }
     },
     created(){
         this.display();

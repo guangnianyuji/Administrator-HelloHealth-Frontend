@@ -5,7 +5,7 @@
                 <el-col :span="18">
 
                     <el-row>
-                        <div class="title">编辑药品信息</div>
+                        <div class="title">编辑药品信息</div><back-button style="margin-left: 25%;margin-top: 5px"></back-button>
                     </el-row>
 
                     <el-row>
@@ -14,7 +14,14 @@
                     <br>
                     <el-row>
                         <div class="annotation">
-                            请注意：药品中文名称、药品分类、药品厂商、药品剂型、药品成分、药品用法、药品适应症、药品禁忌、是否为处方药、是否为医保药，不可为空！
+                            请注意：<br>
+                            1.药品中文名称、药品分类、药品厂商、药品剂型、药品成分、药品用法、药品适应症、药品禁忌、是否为处方药、是否为医保药，不可为空！
+                        </div>
+                    </el-row>
+<!--                    <br>-->
+                    <el-row>
+                        <div class="annotation">
+                            2.批准文号不可更改，以批准文号为标准进行修改
                         </div>
                     </el-row>
                 </el-col>
@@ -25,41 +32,18 @@
         </el-card>
     </div>
 
+
+
     <div class="AddMedicineFrame">
         <el-card class="Medicine-Card">
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品中文名称：</div>
-                </el-col>
-                <el-col :span="12">
-                    <div class="input-hint">
-                        连花清瘟胶囊
-                    </div>
-                </el-col>
-                <el-col :span="6">
-                    <el-button type="primary" class="modify-button" @click="centerDialogVisible = true">修改</el-button>
-                    <el-dialog v-model="centerDialogVisible" title="修改药品中文名称" width="30%" center>
-                        <el-input v-model="input" placeholder="请输入新的中文名称" />
-                        <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="centerDialogVisible = false">
-          确认
-        </el-button>
-      </span>
-                        </template>
-                    </el-dialog>
-                </el-col>
-            </el-row>
 
             <el-row class="info-input">
                 <el-col :span="6">
-                    <div class="input-hint">药品英文名称：</div>
+                    <div class="input-hint">药品批准文号：</div>
                 </el-col>
                 <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品英文名称">
-                        <div class="highlight"></div>
+                    <div class="input-hint">
+                        {{medicineInfo.medicine_id}}
                     </div>
                 </el-col>
             </el-row>
@@ -68,12 +52,12 @@
                 <el-col :span="6">
                     <div class="input-hint">药品图片：</div>
                 </el-col>
-                <el-col :span="18">
+                <el-col :span="16">
                     <el-upload
-                            class="upload-demo"
-                            drag
-                            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                            multiple
+                        class="upload-demo"
+                        drag
+                        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+                        multiple
                     >
                         <el-icon class="el-icon--upload">
                             <upload-filled/>
@@ -87,164 +71,20 @@
                             </div>
                         </template>
                     </el-upload>
-
-
                 </el-col>
             </el-row>
 
-            <el-row class="info-input">
+            <el-row class="info-input" v-for="item in fieldInfo">
                 <el-col :span="6">
-                    <div class="input-hint">药品分类：</div>
+                    <div class="input-hint">{{item.name}}:</div>
                 </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品分类">
-                        <div class="highlight"></div>
+                <el-col :span="13">
+                    <div class="input-hint">
+                       {{medicineInfo[item.field]}}
                     </div>
                 </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品简称：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品简称">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品简介：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品简介">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品来源国家：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品来源国家">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品厂商：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品厂商">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品剂型：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品剂型">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品性状：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品性状">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品成分：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品成分">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品有效期：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品有效期">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品用法：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品用法">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品适应症：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品适应症">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品禁忌：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品禁忌">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品贮藏方法：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品贮藏方法">
-                        <div class="highlight"></div>
-                    </div>
+                <el-col :span="5">
+                    <el-button type="primary" class="modify-button" @click="startEdit(item.field, item.name)">修改</el-button>
                 </el-col>
             </el-row>
 
@@ -253,7 +93,7 @@
                     <div class="input-hint">是否为处方药：</div>
                 </el-col>
                 <el-col :span="18">
-                    <el-radio-group v-model="isPrescription" class="ml-4">
+                    <el-radio-group v-model="this.is_prescription_medicine" class="ml-4">
                         <el-radio :label="true" size="large">是</el-radio>
                         <el-radio :label="false" size="large">否</el-radio>
                     </el-radio-group>
@@ -265,27 +105,15 @@
                     <div class="input-hint">是否为医保药：</div>
                 </el-col>
                 <el-col :span="18">
-                    <el-radio-group v-model="isInsurance" class="ml-4">
+                    <el-radio-group v-model="this.is_medical_insurance_medicine" class="ml-4">
                         <el-radio :label="true" size="large">是</el-radio>
                         <el-radio :label="false" size="large">否</el-radio>
                     </el-radio-group>
                 </el-col>
             </el-row>
 
-            <el-row class="info-input">
-                <el-col :span="6">
-                    <div class="input-hint">药品参考报价：</div>
-                </el-col>
-                <el-col :span="18">
-                    <div class="input-container">
-                        <input type="text" name="text" class="input" placeholder="请输入药品参考报价">
-                        <div class="highlight"></div>
-                    </div>
-                </el-col>
-            </el-row>
-
             <el-row>
-                <button class="submitButton">
+                <button class="submitButton" @click="submit">
                     <span class="svg-wrapper-1">
                         <span class="svg-wrapper">
                             <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -300,31 +128,138 @@
 
         </el-card>
     </div>
+
+    <el-dialog v-model="centerDialogVisible" :title="'修改'+editingName" width="30%" center>
+        <el-input v-model="modified" clearable :placeholder="'请输入新的'+editingName" autosize type="textarea"/>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="centerDialogVisible = false;">取消</el-button>
+                <el-button type="primary" @click="endEdit">
+                    确认
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 
 
 <script>
-import { ref } from 'vue'
 import {UploadFilled} from "@element-plus/icons-vue";
-
+import axios from "axios";
+import { ElMessage } from "element-plus";
+import BackButton from "@/components/BackButton.vue";
 export default {
-    name: "AddMedicineView",
-    components: {UploadFilled},
+    name: "ModifyMedicineView",
+    components: {BackButton, UploadFilled},
     data() {
         return {
-            isPrescription: false,
-            isInsurance: false
+            medicineInfo:{},
+            modified: '',
+            centerDialogVisible: false,
+            is_medical_insurance_medicine: false,
+            is_prescription_medicine: false,
+            editingFieldKey: undefined,
+            editingName: '',
+            fieldInfo:[
+                {name:"药品中文名称", field:"medicine_ch_name"},
+                {name:"药品英文名称", field:"medicine_en_name"},
+                {name:"药品分类", field:"medicine_category"},
+                {name:"药品简称", field:"medicine_abbreviation"},
+                {name:"药品简介", field:"medicine_introduction"},
+                {name:"药品来源国家", field:"medicine_country"},
+                {name:"药品厂商", field:"medicine_manufacturer"},
+                {name:"药品剂型", field:"medicine_form"},
+                {name:"药品性状", field:"medicine_character"},
+                {name:"药品成分", field:"medicine_ingredient"},
+                {name:"药品有效期", field:"medicine_validityperiod"},
+                {name:"药品用法", field:"medicine_usage"},
+                {name:"药品适应症", field:"medicine_indications"},
+                {name:"药品禁忌", field:"medicine_taboo"},
+                {name:"药品贮藏方法", field:"medicine_storage"},
+                {name:"药品参考报价", field:"medicine_reference_quote"},
+            ]
         }
     },
-    setup() {
-        const centerDialogVisible = ref(false)
-        const input = ref('')
-        return {
-            centerDialogVisible,
-            input
+    methods:{
+        check(){
+            //药品中文名称、药品分类、药品厂商、药品剂型、药品成分、药品用法、药品适应症、药品禁忌、是否为处方药、是否为医保药，不可为空！
+            if(this.medicineInfo.medicine_ch_name===''||
+            this.medicineInfo.medicine_category===''||
+            this.medicineInfo.medicine_manufacturer===''||
+            this.medicineInfo.medicine_form===''||
+            this.medicineInfo.medicine_ingredient===''||
+            this.medicineInfo.medicine_usage===''||
+            this.medicineInfo.medicine_indications===''||
+            this.medicineInfo.medicine_taboo===''||
+            this.medicineInfo.is_prescription_medicine===''||
+            this.medicineInfo.is_medical_insurance_medicine===''){
+                ElMessage.error('请填写完整信息！');
+                return false;
+            }else{
+                return true;
+            }
+        },
+        submit(){
+            console.log("提交")
+            if(this.check()) {
+                console.log(this.modified);
+                this.medicineInfo.is_medical_insurance_medicine = this.is_medical_insurance_medicine ? '是' : '否';
+                this.medicineInfo.is_prescription_medicine = this.is_prescription_medicine ? '是' : '否';
+                console.log(this.medicineInfo.is_medical_insurance_medicine);
+                console.log(this.medicineInfo.is_prescription_medicine);
+                axios.post("/api/Administrator/modifyMedicine", this.medicineInfo)
+                    .then(response => {
+                        if (response.data.data.status) {
+                            ElMessage.success('修改成功');
+                            console.log("Successfully modify medicine data:" + response.data.data.message);
+                        } else {
+                            console.error("Error modifying medicine data:", response.data.errorCode);
+                            ElMessage.error('修改失败：' + response.data.errorCode)
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error modifying medicine data:", error);
+                        ElMessage.error('修改失败：' + error)
+                    })
+            }
+        },
+        startEdit(fieldKey, editingName){
+            this.editingFieldKey = fieldKey
+            this.editingName = editingName
+            console.log(this.editingFieldKey)
+            this.modified = this.medicineInfo[this.editingFieldKey]!=null?this.medicineInfo[this.editingFieldKey].valueOf():null;
+            this.centerDialogVisible = true
+        },
+        endEdit(){
+            console.log(this.modified)
+            this.medicineInfo[this.editingFieldKey] = this.modified;
+            console.log(this.editingFieldKey)
+            this.centerDialogVisible = false;
         }
+    },
+    created() {
+        axios
+            .post("/api/Administrator/medicine",{medicine_id:this.$route.query.medicine_id})
+            .then(response => {
+                if (response.data.data.status) {
+                    ElMessage.success('获取药品信息成功');
+                    console.log("Successfully get medicine data");
+                    console.log(response.data.data.medicineDetail);
+                    this.medicineInfo = response.data.data.medicineDetail;
+                
+                    this.is_medical_insurance_medicine=this.medicineInfo.is_medical_insurance_medicine.includes('是');
+                    this.is_prescription_medicine=this.medicineInfo.is_prescription_medicine.includes('是');
+                } else {
+                    console.error("Error getting medicine data:", response.data.errorCode);
+                    ElMessage.error('获取失败：' + response.data.errorCode)
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                ElMessage.error('获取药品信息失败：' + error)
+            });
+    },
 
-    }
 }
 </script>
 <style scoped>
@@ -434,7 +369,7 @@ export default {
 }
 
 .input-hint {
-
+margin-right: 50px;
 }
 
 .upload-demo {
