@@ -1,226 +1,180 @@
 <template>
-  <div class="title">
-    <el-row>
-      <el-col :span="15">
-        <div class="forum-title title-with-line" >
-          …Û∫À¬€Ã≥¬•≤„∑¢≤º
+    <el-form label-width="auto">
+
+        <el-form-item label="ÂèëÂ∏ÉÁî®Êà∑:">
+            <UserInfoCardSmall :user-name="comment_info.author_name" :avatar-url="comment_info.author_portrait" :user-id="comment_info.author_id"></UserInfoCardSmall>
+         </el-form-item>
+
+         <el-form-item label="ÂèëÂ∏ÉÊó∂Èó¥:">
+            {{ comment_info.comment_time }}
+        </el-form-item>
+
+        <el-form-item label="ÊâÄÂ±ûÂ∏ñÂ≠êID:" v-model="check_info">
+            <span>
+                {{comment_info.post_id}}
+            </span>
+        </el-form-item>
+
+        <el-form-item label="Ê•ºÂ±ÇÊâÄÂú®Â±ÇÊï∞:" v-model="check_info">
+            {{comment_info.floor_number}}
+        </el-form-item>
+          
+         <el-form-item label="Ê•ºÂ±ÇÂèëÂ∏ÉÂÜÖÂÆπ:">
+            <FancyButton @click="openContent">ÁÇπÂáªÊü•ÁúãÂÜÖÂÆπËØ¶ÊÉÖ</FancyButton>
+         </el-form-item>
+
+         <el-form-item v-if="!is_checked" label="ÊòØÂê¶ÈÄöËøá:">
+                <el-radio-group v-model="check_info.is_passed">
+                    <el-radio :label="true">ÊòØ</el-radio>
+                    <el-radio :label="false">Âê¶</el-radio>
+                </el-radio-group>
+                
+        </el-form-item>
+
+        <el-form-item v-if="is_checked" label="ÊòØÂê¶ÈÄöËøá:">
+            <span v-if="comment_info.review_status==1">ÈÄöËøá</span>
+            <span v-if="comment_info.review_status==0">‰∏çÈÄöËøá</span>
+        </el-form-item>
+
+        <el-form-item v-if="!is_checked &&!check_info.is_passed" label="ÊòØÂê¶Â∞ÅÁ¶ÅÁî®Êà∑:">
+            <el-radio-group v-model="check_info.is_blocked">
+                    <el-radio :label="true">ÊòØ</el-radio>
+                    <el-radio :label="false">Âê¶</el-radio>
+                </el-radio-group>
+        </el-form-item>
+
+         
+        <el-form-item  v-if="!is_checked" label="ÂÆ°Ê†∏ÂéüÂõ†:">
+            
+            <el-input v-model="check_info.review_reason" class="input" placeholder="Ëã•‰∏çÈÄöËøáÔºåËØ∑ËæìÂÖ•ÂéüÂõ†"/>
+                   
+        </el-form-item>
+     
+        <el-form-item  v-if="is_checked" label="ÂÆ°Ê†∏Êó∂Èó¥:">
+             {{comment_info.review_time}}
+        </el-form-item>
+
+        <el-form-item  v-if="is_checked" label="ÂÆ°Ê†∏ÁªìÊûú:">
+             {{comment_info.review_reason}}
+        </el-form-item>
+
+  
+    </el-form>
+
+        <div  v-if="!is_checked" style="margin-left: 40%;">
+             
+            <el-button size="large" @click="cancel">
+                ÂèñÊ∂à
+                
+            </el-button>
+            <el-button size="large" @click="submit">Êèê‰∫§
+                            <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" fill="currentColor"></path>
+                            </svg>       
+            
+            </el-button>
+            
         </div>
-
-      </el-col>
-
-      <el-col :span="4">
-        <img src="../assets/8.png "  style="height: 150px">
-      </el-col>
-
-    </el-row>
-  </div>
-  <div class="bodyTable">
-    <el-tabs
-        v-model="type_sort.type"
-
-        @tab-click="sortSwitcher">
-      <el-tab-pane  label="Œ¥…Û∫À" name="unchecked"> </el-tab-pane>
-      <el-tab-pane  label="“—…Û∫À" name="checked"> </el-tab-pane>
-
-    </el-tabs>
-
-    <el-table :data="comment_list" border style="width: 100%" height="400" empty-text="‘›Œﬁ∑¢≤º¬•≤„">
-
-
-      <el-table-column label="∑¢≤º”√ªß" width="200" align="center">
-
-        <template #default="scope">
-          <UserInfoCardSmall :user-name="scope.row.author_name" :avatar-url="scope.row.author_portrait" :user-id="scope.row.author_id"></UserInfoCardSmall>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="∑¢≤º ±º‰" width="200" align="center">
-        <template #default="scope">
-
-          {{ scope.row.comment_time }}
-
-        </template>
-      </el-table-column>
-
-      <!--“—…Û∫À-->
-      <el-table-column v-if="type_sort.type=='checked'" label="…Û∫Àπ‹¿Ì‘±ID" align="center">
-        <template #default="scope">
-          {{ scope.row.administrator_id }}
-        </template>
-      </el-table-column>
-
-      <!--“—…Û∫À-->
-      <el-table-column v-if="type_sort.type=='checked'" width="200" label="…Û∫ÀΩ·π˚º∞ ±º‰" align="center">
-        <template #default="scope">
-          <div v-if="scope.row.review_status=='1'" style="color: #118407a5;">
-            Õ®π˝
-          </div>
-          <div v-else style="color: #fe0000a5;">
-            ≤ªÕ®π˝
-          </div>
-          <div>
-            {{ scope.row.review_time }}
-          </div>
-        </template>
-      </el-table-column>
-
-      <el-table-column  label="≤Ÿ◊˜" align="center">
-        <template #default="scope">
-          <FancyButton v-if="type_sort.type==='unchecked'" @click="check(scope.row)">»•…Û∫À</FancyButton>
-          <FancyButton v-else  @click="check(scope.row)">≤Èø¥œÍ«È</FancyButton>
-        </template>
-      </el-table-column>
-
-
-    </el-table>
-  </div>
-
-
-  <el-dialog
-      v-model="checkDialogVisible"
-
-      align-center
-      title="…Û∫À¬•≤„∑¢±Ì"
-      width="70%"
-      top="0"
-      class="checkform"
-  >
-    <CheckFloorForm v-if="checkDialogVisible" :comment_info="selected_comment" :is_checked="type_sort.type=='checked'" @open-content="openDetail" @refresh="display" @close-me="checkDialogVisible=false"/>
-  </el-dialog>
-
-  <el-dialog
-      v-model="detailContentVisible"
-      width="70%"
-      top="0"
-      title="ƒ⁄»›œÍ«È"
-      align-center
-  >
-    <!--”√vif unmount∫Õ÷ÿ–¬mount TipTapEditorReadonly¥ÔµΩ√ø¥Œ¥Úø™ƒ⁄»›∂ºƒ‹À¢–¬µƒƒøµƒ-->
-    <TipTapEditorReadonly v-if="detailContentVisible" :contentJsonString="selected_comment.content"></TipTapEditorReadonly>
-
-  </el-dialog>
+ 
 
 </template>
 
 
+<style scoped>
+
+
+
+.input {
+    font-size: 1em;
+    width: 70%;
+    padding: 0.6em 1em;
+    border: none;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+}
+
+.input:hover {
+    background-color: #f2f2f2;
+}
+
+.input:focus {
+    outline: none;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.input::placeholder {
+    color: #999;
+}
+</style>
+
 <script>
 import axios from "axios";
-import CheckFloorForm from "../components/checkView/CheckFloorForm.vue"
+import {ElMessage} from "element-plus";
 import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
+import GoToPostLink from "@/components/checkView/GoToPostLink.vue";
 import FancyButton from "@/components/FancyButton.vue";
-import TipTapEditorReadonly from "@/components/postView/TipTapEditorReadonly.vue";
 export default{
-
-  components:
-      {
-        TipTapEditorReadonly,
-        FancyButton,
-        UserInfoCardSmall,
-        CheckFloorForm
-      },
-  data:()=>({
-    type_sort:{type:"unchecked"},
-
-    comment_list:[],
-    checkDialogVisible:false,
-    detailContentVisible:false,
-    selected_comment: undefined
-  }),
-  methods:
-      {
-        check(comment_info){
-          axios.post("/api/Check/Floor/Detail",{comment_id:comment_info.comment_id})
-              .then((res)=> {
-                comment_info.post_id=res.data.data.post_id;
-                comment_info.floor_number=res.data.data.floor_number;
-                comment_info.content=res.data.data.content;
-                this.selected_comment = comment_info;
-                this.checkDialogVisible = true
-              })
-              .catch(error => {
-                if(error.network) return;
-                error.defaultHandler("ªÒ»°…Û∫À–≈œ¢≥ˆ¥Ì")
-              })
-
-
+    components: {GoToPostLink, UserInfoCardSmall,FancyButton},
+    props:["comment_info","is_checked"],
+    emits:['closeMe','refresh',"openContent"],
+    data:()=>({
+        
+        check_info:{
+            comment_id:0,
+            author_id:0,
+            is_passed:true,
+            is_blocked:false,
+            review_reason:""
         },
-
-        sortSwitcher(res){
-          if(res.paneName==this.type_sort.type){
-            return;
-          }
-          this.type_sort.type=res.paneName;
-          this.display();
+    }),
+    methods:{
+        submit(){
+            if(this.check_info.is_passed){
+                this.check_info.is_blocked=false;
+            }
+            console.log(this.check_info.comment_id)
+            
+            axios.post("/api/Check/Floor/Submit",this.check_info)
+            .then((res)=> {
+            let responseObj = res.data;
+            if(responseObj.errorCode!==200) {
+                ElMessage.error('ÂÆ°Ê†∏‰ø°ÊÅØÂèëÈÄÅÂ§±Ë¥•ÔºåÈîôËØØÁ†ÅÔºö' + responseObj.errorCode);
+                this.$emit('closeMe');
+                return;
+            }
+            if(responseObj.data.status!==true) {
+                ElMessage.error('ÂÆ°Ê†∏‰ø°ÊÅØÂèëÈÄÅÂ§±Ë¥•,ËØ∑ÈáçËØï');
+                this.$emit('closeMe'); 
+                return;
+            }
+            ElMessage.success('ÂÆ°Ê†∏‰ø°ÊÅØÂèëÈÄÅÊàêÂäü„ÄÇ')
+            this.$emit('closeMe'); 
+            this.$emit('refresh'); 
+        });
+    
         },
-        display(){
-          axios
-              .post("/api/Check/Floor/SortBy", this.type_sort)
-              .then((res)=> {
-                this.comment_list= res.data.data.comment_list;
-
-              })
-
+        cancel(){
+            this.$emit('closeMe');    
         },
-        //∑¿÷π±ÍÃ‚π˝≥§
-        PostTitleSummary(title){
-          if(title.length<10){
-            return title;
-          }
-          else{
-            return title.slice(0,12)+"...";
-          }
-        },
-        openDetail(){
-          console.log("openDetail")
-          console.log(this.selected_comment.content)
-          this.detailContentVisible=true;
-
+        openContent(){
+            console.log("opencontent")
+            this.$emit('openContent');
+             
         }
-      },
-  created(){
-    this.display();
-  }
+    },
+    created()
+    {
+        this.check_info.comment_id=this.comment_info.comment_id;
+        this.check_info.author_id=this.comment_info.author_id;
+        console.log(this.check_info.comment_id)
+    }
+
 
 }
 </script>
-
-
-<style scoped>
-
-.title {
-  font-size: xx-large;
-  margin-left: 10%;
-  margin-top:5%;
-  font-weight: bold;
-}
-
-.forum-title {
-  position: relative;
-}
-
-.title-with-line:before{
-  content:"";
-  top:50%;
-  width: 1px;
-  height: 1.2em;
-  display: inline-block;
-  position: absolute;
-  background-color: var(--el-color-primary);
-  border: 1px solid var(--el-color-primary);
-  border-radius: 2px;
-  transform: translate(-16px , -50%);
-}
-.bodyTable{
-  width: 85%;
-  margin: 5% auto 0 auto;
-}
-
-.container svg:hover {
-  transform: scale(1.1);
-}
-
-.container input:checked ~ svg {
-  fill: RGB(253, 190, 45);
-}
-
-</style>
+ 
