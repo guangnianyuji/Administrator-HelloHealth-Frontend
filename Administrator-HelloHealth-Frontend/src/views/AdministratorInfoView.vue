@@ -110,7 +110,7 @@
         >
         </el-descriptions>
         <el-row v-if="userPosts">
-          <NewsBlockList/>
+          <ADNewsBlockList :is-editing="false"/>
         </el-row>
       </el-card>
     </div>
@@ -120,11 +120,11 @@
 <script>
 import { ElMessage } from "element-plus";
 import axios from "axios"
-import NewsBlockList from "@/components/NewsBlockList.vue";
 import globalData from "@/global/global"
+import ADNewsBlockList from "@/components/ADNewsBlockList.vue";
 export default {
   name: "AdministratorInfoView",
-  components: {NewsBlockList},
+  components: {ADNewsBlockList},
   data(){
     return{
       isAdministrator: true, //是否为管理员

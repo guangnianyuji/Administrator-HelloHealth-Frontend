@@ -27,7 +27,7 @@
       </div>
     <div class="right">
       <!-- 资讯页面中间大块的新闻预览 -->
-      <ADNewsBlockList :selected-tag-id="selectedTagId" @edit="handleEdit"
+      <ADNewsBlockList :selected-tag-id="selectedTagId" @edit="handleEdit" :is-editing="true"
                        ref="newsBlockListInstance"/>
       <!-- :selected-tag-id对应NewsBlockList的props中的selectedTagId -->
       </div>
@@ -37,7 +37,7 @@
       v-model="dialogVisible"
       class="editorDialog"
       modal-class="editorDialogModal"
-      title="发布资讯"
+      :title="(newFlashInfo.flash_being_edited_id===-1 ? '发布': '修改') + '资讯'"
       width="70%"
       top="0"
     >
@@ -65,7 +65,7 @@
         </el-select>
       </el-form-item>
       </el-form>
-      <TipTapEditable ref="editor" />
+      <TipTapEditableExpert ref="editor" />
       <template #footer>
             <span class="dialog-footer">
                 <el-button type="primary" @click="submitNewFlash">
@@ -84,16 +84,16 @@
 <script>
 import {defineComponent} from 'vue'
 import ADNewsBlockList from "@/components/ADNewsBlockList.vue";
-import NewsBlockList from "@/components/NewsBlockList.vue";
 import NewsTagSelector from "@/components/NewsTagSelector.vue";
 import TipTapEditable from "@/components/postView/TipTapEditable.vue";
 import {ElMessage} from "element-plus";
 import axios from "axios";
 import WritePostButton from "@/components/postBoardView/WritePostButton.vue";
+import TipTapEditableExpert from "@/components/postView/TipTapEditableExpert.vue";
 
 export default defineComponent({
   name: "FlashEditorView",
-  components: {WritePostButton, TipTapEditable, NewsTagSelector, NewsBlockList, ADNewsBlockList},
+  components: {TipTapEditableExpert, WritePostButton, TipTapEditable, NewsTagSelector, ADNewsBlockList},
   data() {
     return {
       selectedTagId: null,
@@ -111,6 +111,7 @@ export default defineComponent({
   methods: {
     onCreateFlash(){
       this.dialogVisible=true;
+      this.$refs.editor.editor.commands.clearContent();
       this.newFlashInfo = {
         flash_being_edited_id: -1,
         title:"",
@@ -126,7 +127,7 @@ export default defineComponent({
       this.newFlashInfo = {
         flash_being_edited_id: flash_id,
         title: title,
-        content: content,
+        content: content, // 规定content传入的是资讯文章对象，不是json字符串
         tags: tags
       };
       // 一旦对话框打开，直接设置内容
@@ -134,7 +135,7 @@ export default defineComponent({
         this.$refs.editor.editor.commands.setContent(content);
       });
     },
-    async submitNewFlash() {
+    submitNewFlash() {
       if(this.$refs.editor.editor.state.doc.textContent.length < 15) {
         ElMessage.error('请输入更多内容。');
         return;
@@ -147,64 +148,49 @@ export default defineComponent({
         ElMessage.error('请选择更多标签。');
         return;
       }
-      this.newFlashInfo.content = JSON.stringify(this.$refs.editor.editor.getJSON())
+      this.newFlashInfo.content = this.$refs.editor.editor.getJSON();
       console.log(this.newFlashInfo.content)
-      let response = await axios.post("/api/sendFlash",this.newFlashInfo)
-      let responseObj = response.data;
-      if(responseObj.errorCode!==200) {
-        ElMessage.error('发送失败，错误码：' + responseObj.errorCode);
-        return;
-      }
-      if(responseObj.data.status!==true) {
-        ElMessage.error('发送失败：' + responseObj.data.msg);
-        return;
-      }
-      ElMessage.success('发送成功。');
-      this.dialogVisible = false;
-      this.$refs.editor.editor.commands.clearContent();
+        axios.post("/api/Flash/sendFlash",
+            {
+                content: JSON.stringify(this.$refs.editor.editor.getJSON()),
+                flash_being_edited_id: this.newFlashInfo.flash_being_edited_id,
+                tags: this.newFlashInfo.tags,
+                title:this.newFlashInfo.title
+            })
+            .then(res => {
+                ElMessage.success('发送成功。');
+                this.dialogVisible = false;
+                let newNews = {
+                    id: this.newFlashInfo.flash_being_edited_id,
+                    title: this.newFlashInfo.title,
+                    content: this.newFlashInfo.content,
+                    tags: this.newFlashInfo.tags,
+                };
 
-      const newNews = {
-        id: this.newFlashInfo.flash_being_edited_id,
-        image: this.getCoverImageUrl(this.newFlashInfo.content),
-        title: this.newFlashInfo.title,
-        content: this.getContentText(this.newFlashInfo.content),
-        tags: this.newFlashInfo.tags,
-      };
+                if (newNews.id === -1) {
+                    // 如果是新建新闻，调用 addNews
+                    this.$refs.newsBlockListInstance.addNews(newNews);
+                } else {
+                    // 如果是编辑新闻，调用 updateNews
+                    this.$refs.newsBlockListInstance.updateNews(newNews);
+                }
+                this.$refs.editor.editor.commands.clearContent();
+            })
+            .catch(error => {
+                if(error.network) return;
+                switch (error.errorCode){
+                    case 400:
+                        ElMessage.error('选择的标签太多');
+                        break;
+                    default:
+                        error.defaultHandler("资讯发送失败")
+                }
+            })
 
-      if (newNews.id === -1) {
-        // 如果是新建新闻，调用 addNews
-        this.$refs.newsBlockListInstance.addNews(newNews);
-      } else {
-        // 如果是编辑新闻，调用 updateNews
-        this.$refs.newsBlockListInstance.updateNews(newNews);
-      }
-      this.$refs.editor.editor.commands.clearContent();
-    },
-    getCoverImageUrl(contentJson) {
-      contentJson = JSON.parse(contentJson);
-      if (contentJson && Array.isArray(contentJson.content)) {
-        for (const contentObj of contentJson.content) {
-          if (contentObj.type === 'image') {
-            return contentObj.attrs.src;
-          }
-        }
-      }
-      return '';
-    },
-    getContentText(contentJson) {
-      contentJson = JSON.parse(contentJson);
-      if (contentJson && Array.isArray(contentJson.content)) {
-        for (const contentObj of contentJson.content) {
-          if (contentObj.type === 'paragraph') {
-            return contentObj.content[0].text;
-          }
-        }
-      }
-      return '';
     },
   },
   mounted() { // mounted 时获取全部标签列表
-    axios.get("https://mock.apifox.cn/m1/2961538-0-default/api/childTags")
+    axios.get("/api/Flash/childTags")
         .then(response => {
           this.tags = response.data.data.tags;
         })

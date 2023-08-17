@@ -11,9 +11,9 @@
           :flash_title="flash.title"
           :flash_date="flash.date"
           :flash_content="flash.content"
-          :flash_image="flash.image"
           :flash_tags_list="flash.tags"
           :flash_id="flash.id"
+          :is_editing="isEditing"
           @delete="handleDelete"
           @edit="onEdit"
       />
@@ -43,7 +43,9 @@ export default {
       type: Number,
       default: null,
     },
+      isEditing: Boolean
   },
+    emits: ['edit'],
   data() {
     return {
       newsList: [],  // 全部新闻列表
@@ -80,13 +82,17 @@ export default {
       this.$emit('edit', flash_id, title, content, tags);
     },
     getNewsList() {
+        // 通过my来获取属于当前管理员的资讯
       const apiUrl = this.selectedTagId
-          ? `/api/Flash/newsByTag?id=${this.selectedTagId}&title=`
-          : "/api/Flash/newsByTag?id=&title=";
-      axios.get(apiUrl)
+          ? `/api/Flash/newsByTag/${this.selectedTagId}`
+          : "/api/Flash/newsByTag/-1";
+      axios.get(apiUrl,{params:{"my":!this.isEditing}})
           .then(res => {
-            this.newsList = res.data.data.newsList;    // 获取全部新闻列表
-            this.total = this.newsList.length;         // 总新闻数
+              for(let news of res.data.data.newsList){
+                  news.content = JSON.parse(news.content)
+              }
+              this.newsList = res.data.data.newsList;    // 获取全部新闻列表
+              this.total = this.newsList.length;         // 总新闻数
           })
     },
     addNews(newNews) {
