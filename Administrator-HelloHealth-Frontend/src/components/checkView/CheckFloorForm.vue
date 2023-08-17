@@ -54,7 +54,7 @@
              {{comment_info.review_time}}
         </el-form-item>
 
-        <el-form-item  v-if="is_checked" label="审核原因:">
+        <el-form-item  v-if="is_checked" label="审核结果:">
              {{comment_info.review_reason}}
         </el-form-item>
 
@@ -126,7 +126,7 @@ export default{
         
         check_info:{
             comment_id:0,
-            author_id:0,
+            //author_id:0, 不需要作者id，可以直接通过comment获得
             is_passed:true,
             is_blocked:false,
             review_reason:""
@@ -167,7 +167,7 @@ export default{
     created()
     {
         this.check_info.comment_id=this.comment_info.comment_id;
-        this.check_info.author_id=this.comment_info.author_id;
+        //this.check_info.author_id=this.comment_info.author_id;
     }
 
 
