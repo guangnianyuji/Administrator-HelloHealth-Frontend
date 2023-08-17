@@ -82,7 +82,7 @@
         top="0"
         class="checkform"
     >
-        <CheckReportCommentForm :report_info="selected_report" :is_checked="type_sort.type=='checked'" @open-content="openDetail" @refresh="display" @close-me="checkDialogVisible=false"/>
+        <CheckReportCommentForm v-if="checkDialogVisible" :report_info="selected_report" :is_checked="type_sort.type=='checked'" @open-content="openDetail" @refresh="display" @close-me="checkDialogVisible=false"/>
     </el-dialog>
 
     <el-dialog

@@ -85,7 +85,7 @@
         top="0"
         class="checkform"
     >
-        <CheckFloorForm :comment_info="selected_comment" :is_checked="type_sort.type=='checked'" @open-content="openDetail" @refresh="display" @close-me="checkDialogVisible=false"/>
+        <CheckFloorForm v-if="checkDialogVisible" :comment_info="selected_comment" :is_checked="type_sort.type=='checked'" @open-content="openDetail" @refresh="display" @close-me="checkDialogVisible=false"/>
     </el-dialog>
 
     <el-dialog

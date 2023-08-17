@@ -137,6 +137,8 @@ export default{
             if(this.check_info.is_passed){
                 this.check_info.is_blocked=false;
             }
+            console.log(this.check_info.comment_id)
+            
             axios.post("/api/Check/Floor/Submit",this.check_info)
             .then((res)=> {
             let responseObj = res.data;
@@ -154,6 +156,7 @@ export default{
             this.$emit('closeMe'); 
             this.$emit('refresh'); 
         });
+    
         },
         cancel(){
             this.$emit('closeMe');    
@@ -168,6 +171,7 @@ export default{
     {
         this.check_info.comment_id=this.comment_info.comment_id;
         this.check_info.author_id=this.comment_info.author_id;
+        console.log(this.check_info.comment_id)
     }
 
 
