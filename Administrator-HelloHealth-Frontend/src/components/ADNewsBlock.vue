@@ -118,8 +118,7 @@ export default {
           }
       },
       goFullContent() {
-        if(!this.is_editing)
-          window.location = (globalData.userWebsite + "/api/Flash/getNewsById/"+this.$props.flash_id);
+          window.location = (globalData.userWebsite + "/news/"+this.$props.flash_id);
       },
   }
 }
@@ -159,7 +158,7 @@ export default {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -10px;                    /* 调整下划线与文字的距离 */
+  top: 1.2em;                    /* 调整下划线与文字的距离 */
   width: 100%;
   height: 1px;                      /* 设置默认粗细 */
   background-color: #333;
