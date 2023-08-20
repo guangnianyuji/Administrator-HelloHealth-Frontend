@@ -56,21 +56,27 @@
                     <el-upload
                         class="upload-demo"
                         drag
-                        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                        multiple
+                        action="#"
+                        :show-file-list="false"
+                        :auto-upload="false"
+                        :on-change="uploadFile"
+                        accept="image/jpg,image/jpeg,image/png"
                     >
-                        <el-icon class="el-icon--upload">
+                        <img v-if="imageUrl" :src="imageUrl" class="upload-img" />
+
+                        <el-icon v-if="!imageUrl" class="el-icon--upload">
                             <upload-filled/>
                         </el-icon>
-                        <div class="el-upload__text">
+                        <div class="el-upload__text" v-if="!imageUrl">
                             Drop file here or <em>click to upload</em>
                         </div>
-                        <template #tip>
-                            <div class="el-upload__tip">
-                                jpg/png files with a size less than 500kb
-                            </div>
-                        </template>
                     </el-upload>
+                    <el-button
+                        type="danger"
+                        v-if="imageUrl"
+                        class="upload-demo-clear"
+                        @click="handleRemove"
+                    >删除</el-button>
                 </el-col>
             </el-row>
 
@@ -153,6 +159,7 @@ export default {
     components: {BackButton, UploadFilled},
     data() {
         return {
+            imageUrl: '',
             medicineInfo:{},
             modified: '',
             centerDialogVisible: false,
@@ -181,6 +188,38 @@ export default {
         }
     },
     methods:{
+        uploadFile(item) {
+            console.log(item);
+            let formData = new FormData();
+            let file = item.raw;
+            this.imageUrl1 = URL.createObjectURL(file);
+            formData.append("medicine_img", file);
+
+
+            //将图片以formdata形式上传，后端返回图片url，再将url赋值给medicine_image
+            axios.post('/api/Forum/ImgUpload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => {
+                ElMessage.success("图片上传成功，请等待图片加载。")
+                this.medicineInfo.medicine_image = response.data.data.url;
+            }).catch((error)=>{
+                if(error.network) return;
+                switch (error.errorCode) {
+                    case 115:
+                        ElMessage.error("图片上传失败，请联系管理员！")
+                        break;
+                    default:
+                        error.defaultHandler();
+                }
+            })
+        },
+        // 删除只需清空imageUrl1即可
+        handleRemove(file, fileList) {
+            this.imageUrl = "";
+            this.medicineInfo.medicine_image=null;
+        },
         check(){
             //药品中文名称、药品分类、药品厂商、药品剂型、药品成分、药品用法、药品适应症、药品禁忌、是否为处方药、是否为医保药，不可为空！
             if(this.medicineInfo.medicine_ch_name===''||
@@ -192,7 +231,8 @@ export default {
             this.medicineInfo.medicine_indications===''||
             this.medicineInfo.medicine_taboo===''||
             this.medicineInfo.is_prescription_medicine===''||
-            this.medicineInfo.is_medical_insurance_medicine===''){
+            this.medicineInfo.is_medical_insurance_medicine===''||
+            this.medicineInfo.medicine_image===''){
                 ElMessage.error('请填写完整信息！');
                 return false;
             }else{
@@ -246,7 +286,7 @@ export default {
                     console.log("Successfully get medicine data");
                     console.log(response.data.data.medicineDetail);
                     this.medicineInfo = response.data.data.medicineDetail;
-                
+                    this.imageUrl=this.medicineInfo.medicine_image;//图片初始化
                     this.is_medical_insurance_medicine=this.medicineInfo.is_medical_insurance_medicine.includes('是');
                     this.is_prescription_medicine=this.medicineInfo.is_prescription_medicine.includes('是');
                 } else {
@@ -427,5 +467,14 @@ button.submitButton:hover span.text {
 
 button.submitButton:active {
     transform: scale(0.95);
+}
+.upload-img{
+    width: 90%;
+    height:50%;
+    border-radius: 10px;
+}
+.upload-demo-clear{
+    margin-top: 10px;
+    margin-left: 33%;
 }
 </style>

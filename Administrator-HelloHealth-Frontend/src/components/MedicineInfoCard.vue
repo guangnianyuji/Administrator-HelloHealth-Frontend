@@ -4,7 +4,8 @@
             <el-row>
                 <el-col :span="8">
                     <div style="color: gray">批准文号：{{ medicine.medicine_id }}</div>
-                    <img class="img" src="@/assets/连花清瘟.jpg">
+<!--                    <img class="img" src="@/assets/连花清瘟.jpg">-->
+                    <img class="img" :src="medicine.medicine_image">
                 </el-col>
                 <el-col :span="13">
                     <el-row class="M_title">{{ medicine.medicine_ch_name }}（{{ medicine.medicine_en_name }}）</el-row>
