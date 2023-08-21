@@ -2,22 +2,22 @@
     <el-form label-width="auto" :model="check_info" :rules="doctorrule" ref="doctorform">
  
         <el-form-item label="申请用户:">
-            <UserInfoCardSmall :avatar-url="doctor_info.user_portrait" :user-name="doctor_info.user_name" :user-id="doctor_info.user_id"></UserInfoCardSmall>
+            <UserInfoCardSmall :avatar-url="applydoctor_info.user_portrait" :user-name="applydoctor_info.user_name" :user-id="applydoctor_info.user_id"></UserInfoCardSmall>
          </el-form-item>
 
          <el-form-item label="申请时间:">
-            {{ doctor_info.submit_date }}
+            {{ applydoctor_info.submit_time }}
         </el-form-item>
           
          <el-form-item label="执业医师资格证:">
-            <img :src="doctor_info.certification">
+            <img :src="applydoctor_info.certification">
          </el-form-item>
          <el-form-item label="执业医师执业证:">
-            <img :src="doctor_info.license">
+            <img :src="applydoctor_info.license">
          </el-form-item>
 
          <el-form-item v-if="is_checked" label="医生职称:">
-            {{doctor_info.title}}
+            {{applydoctor_info.title}}
              
          </el-form-item>
 
@@ -27,7 +27,7 @@
          </el-form-item> 
 
          <el-form-item v-if="is_checked" label="医生所属科室:">
-            {{doctor_info.department}}
+            {{applydoctor_info.department}}
              
          </el-form-item>
 
@@ -38,7 +38,7 @@
 
 
          <el-form-item v-if="is_checked" label="医生所在医院级别:">
-            {{doctor_info.hospital_rank}}
+            {{applydoctor_info.hospital_rank}}
              
          </el-form-item>
 
@@ -56,8 +56,8 @@
         </el-form-item>
 
         <el-form-item v-if="is_checked" label="是否通过:">
-            <span v-if="doctor_info.review_status==1">通过</span>
-            <span v-if="doctor_info.review_status==0">不通过</span>
+            <span v-if="applydoctor_info.review_status==1">通过</span>
+            <span v-if="applydoctor_info.review_status==0">不通过</span>
         </el-form-item>
 
          
@@ -66,11 +66,11 @@
         </el-form-item>
      
         <el-form-item  v-if="is_checked" label="审核时间:">
-             {{doctor_info.review_date}}
+             {{applydoctor_info.review_time}}
         </el-form-item>
 
         <el-form-item  v-if="is_checked" label="审核原因:">
-             {{doctor_info.review_reason}}
+             {{applydoctor_info.review_reason}}
         </el-form-item>
 
   
@@ -124,7 +124,7 @@ import {ElMessage} from "element-plus";
 import UserInfoCardSmall from "@/components/UserInfoCardSmall.vue";
 export default{
     components: {UserInfoCardSmall},
-    props:["doctor_info","is_checked"],
+    props:["applydoctor_info","is_checked"],
     emits:['closeMe','refresh'],
     data:()=>({
        
@@ -140,8 +140,7 @@ export default{
             ],
         },
         check_info:{
-            doctor_id:0,
-            user_id:0,
+            apply_id:0,
             is_passed:true,
             reason:"",
             doctor_title:"",
@@ -150,21 +149,7 @@ export default{
         },
     }),
     methods:{
-        checkForm() {
-            let ok=false;
-            this.$refs.doctorform.validate(valid=>(ok=valid));
-            return ok;
-        },
-
-        submit(){
-            if(this.check_info.is_passed){
-                if(!this.checkForm()){
-            ElMessage.error('请完善表单相关信息！');
-            return;
-           }
-            }
-            
-
+        ssubmit() {
             axios.post("/api/Check/Doctor/Submit",this.check_info)
             .then((res)=> {
             let responseObj = res.data;
@@ -184,7 +169,22 @@ export default{
         }
         
         );
+        },
+
+        submit(){
             
+            if(this.check_info.is_passed){
+                this.$refs.doctorform.validate((valid) =>{
+                    if(!valid){
+                        ElMessage.error('请完善表单相关信息！');
+                        return;
+                    }
+                    this.ssubmit();
+              })
+            }
+            else{
+                this.ssubmit()
+            }         
         },
         cancel(){
             this.$emit('closeMe');    
@@ -192,8 +192,8 @@ export default{
     },
     created()
     {
-        this.check_info.doctor_id=doctor_info.doctor_id;
-        this.check_info.user_id=doctor_info.user_id;
+        this.check_info.apply_id=this.applydoctor_info.apply_id;
+        this.check_info.user_id=this.applydoctor_info.user_id;
     }
 
 
