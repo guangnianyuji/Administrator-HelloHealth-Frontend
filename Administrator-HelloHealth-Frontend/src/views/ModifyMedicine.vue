@@ -192,7 +192,7 @@ export default {
             console.log(item);
             let formData = new FormData();
             let file = item.raw;
-            this.imageUrl1 = URL.createObjectURL(file);
+            this.imageUrl = URL.createObjectURL(file);
             formData.append("medicine_img", file);
 
 
@@ -204,6 +204,7 @@ export default {
             }).then(response => {
                 ElMessage.success("图片上传成功，请等待图片加载。")
                 this.medicineInfo.medicine_image = response.data.data.url;
+                this.imageUrl = response.data.data.url;
             }).catch((error)=>{
                 if(error.network) return;
                 switch (error.errorCode) {
@@ -215,7 +216,7 @@ export default {
                 }
             })
         },
-        // 删除只需清空imageUrl1即可
+        // 删除只需清空imageUrl即可
         handleRemove(file, fileList) {
             this.imageUrl = "";
             this.medicineInfo.medicine_image=null;

@@ -493,6 +493,7 @@ export default {
             }).then(response => {
                 ElMessage.success("图片上传成功，请等待图片加载。")
                 this.medicine.medicine_image = response.data.data.url;
+                this.imageUrl1 = URL.createObjectURL(item.raw);
             }).catch((error)=>{
                 if(error.network) return;
                 switch (error.errorCode) {
