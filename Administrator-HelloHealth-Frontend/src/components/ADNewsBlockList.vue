@@ -95,9 +95,8 @@ export default {
     },
     handleDelete(id) {
       this.newsList = this.newsList.filter(n => n.id !== id);
-      this.total = this.newsList.length;
 
-      if (this.page > 1 && (this.total - 1) / this.pageSize < this.page - 1) {
+      if (this.page > 1 && (this.filteredNewsListTotal - 1) / this.pageSize < this.page - 1) {
         this.page--;
       }
     },

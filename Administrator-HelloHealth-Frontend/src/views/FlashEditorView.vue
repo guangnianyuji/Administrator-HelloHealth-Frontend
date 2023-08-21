@@ -50,9 +50,8 @@
             class="tagSelector"
             v-model="newFlashInfo.tags"
             multiple
-            placeholder="选择2~4个标签"
+            placeholder="选择1~4个标签"
             style="width: 100%"
-            :allow-create="true"
             :filterable="true"
             :multiple-limit="4"
         >
@@ -84,7 +83,6 @@
 <script>
 import {defineComponent} from 'vue'
 import ADNewsBlockList from "@/components/ADNewsBlockList.vue";
-import NewsBlockList from "@/components/NewsBlockList.vue";
 import NewsTagSelector from "@/components/NewsTagSelector.vue";
 import TipTapEditable from "@/components/postView/TipTapEditable.vue";
 import {ElMessage} from "element-plus";
@@ -93,7 +91,7 @@ import WritePostButton from "@/components/postBoardView/WritePostButton.vue";
 
 export default defineComponent({
   name: "FlashEditorView",
-  components: {WritePostButton, TipTapEditable, NewsTagSelector, NewsBlockList, ADNewsBlockList},
+  components: {WritePostButton, TipTapEditable, NewsTagSelector, ADNewsBlockList},
   data() {
     return {
       selectedTagId: null,
@@ -144,7 +142,7 @@ export default defineComponent({
         ElMessage.error('请输入更长的标题。');
         return;
       }
-      if(this.newFlashInfo.tags.length < 2) {
+      if(this.newFlashInfo.tags.length < 1) {
         ElMessage.error('请选择更多标签。');
         return;
       }
