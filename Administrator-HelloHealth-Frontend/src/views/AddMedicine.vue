@@ -98,23 +98,27 @@
                     <el-upload
                             class="upload-demo"
                             drag
-                            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                            multiple
-                            v-model="this.medicine.medicine_image"
+                            action="#"
+                            :show-file-list="false"
+                            :auto-upload="false"
+                            :on-change="uploadFile"
+                            accept="image/jpg,image/jpeg,image/png"
                     >
-                        <el-icon class="el-icon--upload">
+                        <img v-if="imageUrl1" :src="imageUrl1" class="upload-img" />
+
+                        <el-icon v-if="!imageUrl1" class="el-icon--upload">
                             <upload-filled/>
                         </el-icon>
-                        <div class="el-upload__text">
+                        <div class="el-upload__text" v-if="!imageUrl1">
                             Drop file here or <em>click to upload</em>
                         </div>
-                        <template #tip>
-                            <div class="el-upload__tip">
-                                jpg/png files with a size less than 500kb
-                            </div>
-                        </template>
                     </el-upload>
-
+                    <el-button
+                        type="danger"
+                        v-if="imageUrl1"
+                        class="upload-demo-clear"
+                        @click="handleRemove1"
+                    >删除</el-button>
 
                 </el-col>
             </el-row>
@@ -447,6 +451,7 @@ export default {
     },
     data() {
         return {
+            imageUrl1: '',
             isPrescription: false,
             isInsurance: false,
             medicine: {
@@ -474,6 +479,38 @@ export default {
         }
     },
     methods: {
+        uploadFile(item) {
+            let formData = new FormData();
+            let file = item.raw;
+            this.imageUrl1 = URL.createObjectURL(file);
+            formData.append("medicine_img", file);
+
+            //将图片以formdata形式上传，后端返回图片url，再将url赋值给medicine_image
+            axios.post('/api/Forum/ImgUpload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => {
+                ElMessage.success("图片上传成功，请等待图片加载。")
+                this.medicine.medicine_image = response.data.data.url;
+                this.imageUrl1 = URL.createObjectURL(item.raw);
+            }).catch((error)=>{
+                if(error.network) return;
+                switch (error.errorCode) {
+                    case 115:
+                        ElMessage.error("图片上传失败，请联系管理员！")
+                        break;
+                    default:
+                        error.defaultHandler();
+                }
+            })
+        },
+        // 删除只需清空imageUrl1即可
+        handleRemove1(file, fileList) {
+            this.imageUrl1 = "";
+            this.medicine.medicine_image=null;
+        },
+
         checkRequired(){
             let flag = true;
             if(this.medicine.medicine_id === ''){
@@ -731,5 +768,13 @@ export default {
 .input-hint {
     margin-top: 4%;
 }
-
+.upload-img{
+    width: 90%;
+    height:50%;
+    border-radius: 10px;
+}
+.upload-demo-clear{
+    margin-top: 10px;
+    margin-left: 33%;
+}
 </style>

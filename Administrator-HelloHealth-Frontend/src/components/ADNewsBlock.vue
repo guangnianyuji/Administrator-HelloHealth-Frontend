@@ -1,6 +1,6 @@
 <!--
 管理员端资讯页面中间大块的新闻预览中的一个小新闻块，增加了修改和删除按钮
-作者：吴可非
+作者：吴可非、wkq
 -->
 <template>
   <el-card shadow="hover" class="news-block-card">
@@ -15,13 +15,13 @@
       <el-container>
         <el-header class="flash-header">
           <!-- 新闻标题 -->
-          <h1 class="flash-title"
+          <h1 class="flash-title" @click="goFullContent"
               style="font-weight: bold;">{{ truncatedTitle }}</h1>
           <span class="flash-date">{{ flash_date }}</span>
         </el-header>
         <el-main class="flash-preview">
           <!-- 新闻预览内容 -->
-          <p>{{ truncatedContent }}</p>
+          <p>{{ flash_display_content }}</p>
         </el-main>
         <el-footer class="flash-tags">
           <!-- 新闻标签 -->
@@ -32,7 +32,7 @@
       </el-container>
     </el-container>
 
-    <div class="news-block-actions">
+    <div class="news-block-actions" v-if="is_editing">
       <!-- 编辑按钮 -->
       <i class="fi fi-rr-pencil clickable" @click="onEdit"/>
       <div style="width: 10px;"/>
@@ -45,32 +45,20 @@
 
 <script>
 import axios from "axios";
+import globalData from "@/global/global";
 
 export default {
   name: "ADNewsBlock",
   props: {
-    flash_id: {
-      type: Number
-    },
-    flash_title: {
-      type: String
-    },
-    flash_date: {
-      type: String
-    },
-    flash_content: {
-      type: String
-    },
-    flash_preview: {
-      type: String
-    },
-    flash_image: {
-      type: String
-    },
-    flash_tags_list: {
-      type: Array
-    }
+
+    flash_id: Number,
+    flash_title: String,
+    flash_date: String,
+    flash_content: Object,
+    flash_tags_list: Array,
+    is_editing: Boolean
   },
+
   computed: {
     truncatedTitle: function() {
       const limit = 5; /* title最大字符数 */
@@ -80,14 +68,30 @@ export default {
         return this.flash_title;
       }
     },
-    truncatedContent: function() {
-      const limit = 10; /* preview最大字符数 */
-      if (this.flash_preview.length > limit) {
-        return this.flash_preview.substring(0, limit) + '...';
-      } else {
-        return this.flash_preview;
+
+      flash_image: function() {
+          let contentJson = this.flash_content
+          if (contentJson && Array.isArray(contentJson.content)) {
+              for (const contentObj of contentJson.content) {
+                  if (contentObj.type === 'image') {
+                      return contentObj.attrs.src;
+                  }
+              }
+          }
+          return '';
+      },
+      flash_display_content: function() {
+          let contentJson = this.flash_content
+          if (contentJson && Array.isArray(contentJson.content)) {
+              for (const contentObj of contentJson.content) {
+                  if (contentObj.type === 'paragraph') {
+                      return this.truncateContent(contentObj.content[0].text);
+                  }
+              }
+          }
+          return '';
+
       }
-    }
   },
   methods: {
     onEdit() {
@@ -100,14 +104,27 @@ export default {
         type: 'warning'
       }).then(() => {
         // 确定删除
-        axios.delete("/api/Flash/delete/"+this.flash_id)
+
+        axios.delete(`/api/Flash/delete/${this.flash_id}`)
+
             .then(res => {
               this.$emit('delete', this.flash_id)
             });
       }).catch(() => {
         // 取消删除
       });
-    }
+    },
+      truncateContent: function(content) {
+          const limit = 10; /* preview最大字符数 */
+          if (content.length > limit) {
+              return content.substring(0, limit) + '...';
+          } else {
+              return content;
+          }
+      },
+      goFullContent() {
+          window.location = (globalData.userWebsite + "/news/"+this.$props.flash_id);
+      },
   }
 }
 </script>
@@ -146,7 +163,7 @@ export default {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -10px;                    /* 调整下划线与文字的距离 */
+  top: 1.2em;                    /* 调整下划线与文字的距离 */
   width: 100%;
   height: 1px;                      /* 设置默认粗细 */
   background-color: #333;

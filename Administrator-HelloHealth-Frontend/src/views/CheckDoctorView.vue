@@ -27,7 +27,7 @@
 
     
 
-    <el-table :data="doctor_list" border style="width: 100%" height="400" empty-text="暂无医生">
+    <el-table :data="apply_list" border style="width: 100%" height="400" empty-text="暂无医生">
         
         <el-table-column label="申请用户" width="200" align="center">
             <template #default="scope">
@@ -38,7 +38,7 @@
         
         <el-table-column label="申请时间" width="200" align="center" >
             <template #default="scope">
-                <div>{{ scope.row.submit_date }}</div>
+                <div>{{ scope.row.submit_time }}</div>
             </template>
         </el-table-column>
 
@@ -85,7 +85,7 @@
         top="0"
         class="checkform"
     >
-        <CheckDoctorForm v-if="checkDialogVisible" :doctor_info="selected_doctor" :is_checked="type_sort.type=='checked'" @refresh="display" @close-me="checkDialogVisible=false"/>
+        <CheckDoctorForm v-if="checkDialogVisible" :applydoctor_info="selected_applydoctor" :is_checked="type_sort.type=='checked'" @refresh="display" @close-me="checkDialogVisible=false"/>
     </el-dialog>
 
 </template>
@@ -107,25 +107,24 @@ export default{
     data:()=>({
         type_sort:{type:"unchecked"},
         
-        doctor_list:[],
+        apply_list:[],
         checkDialogVisible:false,
-        selected_doctor:{}
+        selected_applydoctor:{}
     }),
     methods:
     {
-        check(doctor_info){
-            axios.post("/api/Check/Doctor/Detail",{doctor_id:doctor_info.doctor_id})
+        check(applydoctor_info){
+            axios.post("/api/Check/Doctor/Detail",{apply_id:applydoctor_info.apply_id})
             .then((res)=> {
-                doctor_info.certification=res.data.data.certification;    
-                doctor_info.license=res.data.data.license; 
-                doctor_info.title=res.data.data.title; 
-                doctor_info.department=res.data.data.department; 
-                doctor_info.hospital_rank=res.data.data.hospital_rank; 
-                 
+                applydoctor_info.certification=res.data.data.certification;    
+                applydoctor_info.license=res.data.data.license; 
+                applydoctor_info.title=res.data.data.title; 
+                applydoctor_info.department=res.data.data.department; 
+                applydoctor_info.hospital_rank=res.data.data.hospital_rank; 
             })
             .then(()=>{
                 
-                this.selected_doctor=doctor_info;
+                this.selected_applydoctor=applydoctor_info;
                 this.checkDialogVisible=true;
             })
 
@@ -143,7 +142,7 @@ export default{
             axios
                 .post("/api/Check/Doctor/SortBy", this.type_sort)
                 .then((res)=> {
-                    this.doctor_list= res.data.data.doctor_list;
+                    this.apply_list= res.data.data.apply_list;
                      
                 })
 

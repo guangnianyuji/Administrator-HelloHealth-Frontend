@@ -54,7 +54,7 @@
              {{comment_info.review_time}}
         </el-form-item>
 
-        <el-form-item  v-if="is_checked" label="审核原因:">
+        <el-form-item  v-if="is_checked" label="审核结果:">
              {{comment_info.review_reason}}
         </el-form-item>
 

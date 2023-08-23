@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@element-plus/icons": "^0.0.11",
     "@element-plus/icons-vue": "^2.1.0",
     "@flaticon/flaticon-uicons": "^2.2.0",
     "@tiptap/extension-image": "^2.0.3",

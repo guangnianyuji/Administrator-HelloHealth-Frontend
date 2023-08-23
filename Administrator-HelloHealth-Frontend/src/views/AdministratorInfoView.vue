@@ -99,6 +99,23 @@
       </el-card>
     </div>
 
+    <!--展示信息的分栏，分栏3：发布的新闻-->
+    <div v-if="isLogin && isAdministrator">
+      <el-card class="cardStyle">
+        <el-descriptions
+            class="margin-top"
+            title="发布的新闻"
+            :column="3"
+            :size="size"
+            border
+        >
+        </el-descriptions>
+        <el-row v-if="userPosts">
+          <ADNewsBlockList :is-editing="false"/>
+        </el-row>
+      </el-card>
+    </div>
+
   </div>
 </template>
 
@@ -106,8 +123,12 @@
 import { ElMessage } from "element-plus";
 import axios from "axios"
 import globalData from "@/global/global"
+import ADNewsBlockList from "@/components/ADNewsBlockList.vue";
 export default {
   name: "AdministratorInfoView",
+
+  components: {ADNewsBlockList},
+
   data(){
     return{
       isAdministrator: true, //是否为管理员
