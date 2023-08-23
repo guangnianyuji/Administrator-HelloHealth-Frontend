@@ -50,7 +50,7 @@ import globalData from "@/global/global";
 export default {
   name: "ADNewsBlock",
   props: {
-
+    flash_image: String,
     flash_id: Number,
     flash_title: String,
     flash_date: String,
@@ -68,18 +68,6 @@ export default {
         return this.flash_title;
       }
     },
-
-      flash_image: function() {
-          let contentJson = this.flash_content
-          if (contentJson && Array.isArray(contentJson.content)) {
-              for (const contentObj of contentJson.content) {
-                  if (contentObj.type === 'image') {
-                      return contentObj.attrs.src;
-                  }
-              }
-          }
-          return '';
-      },
       flash_display_content: function() {
           let contentJson = this.flash_content
           if (contentJson && Array.isArray(contentJson.content)) {

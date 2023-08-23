@@ -20,6 +20,7 @@
           v-for="flash in currentNewsList"  :key="flash.id"
           :flash_title="flash.title"
           :flash_date="flash.date"
+          :flash_image="flash.image"
           :flash_content="flash.content"
           :flash_tags_list="flash.tags"
           :flash_id="flash.id"
@@ -107,7 +108,6 @@ export default {
     getNewsList() {
         // 通过my来获取属于当前管理员的资讯
       const apiUrl = this.selectedTagId
-
           ? `/api/Flash/newsByTag/${this.selectedTagId}`
           : "/api/Flash/newsByTag/-1";
       axios.get(apiUrl,{params:{"my":!this.isEditing}})
@@ -116,22 +116,7 @@ export default {
                   news.content = JSON.parse(news.content)
               }
               this.newsList = res.data.data.newsList;    // 获取全部新闻列表
-              this.total = this.newsList.length;         // 总新闻数
-
           })
-    },
-    getContentText(contentJson) {
-      contentJson = JSON.parse(contentJson);
-      let paragraphs = [];
-      if (contentJson && Array.isArray(contentJson.content)) {
-        for (const block of contentJson.content) {
-          if (block.type === 'paragraph') {
-            let paragraph = block.content.map(node => node.text).join(' ');
-            paragraphs.push(paragraph);
-          }
-        }
-      }
-      return paragraphs.join(' ');
     },
     addNews(newNews) {
       this.newsList.push(newNews);
