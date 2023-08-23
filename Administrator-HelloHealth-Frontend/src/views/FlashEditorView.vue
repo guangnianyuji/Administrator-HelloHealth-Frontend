@@ -111,7 +111,7 @@ export default defineComponent({
   methods: {
     onCreateFlash(){
       this.dialogVisible=true;
-      this.$refs.editor.editor.commands.clearContent();
+
       this.newFlashInfo = {
         flash_being_edited_id: -1,
         title:"",
@@ -131,10 +131,10 @@ export default defineComponent({
         content: content, // 规定content传入的是资讯文章对象，不是json字符串
         tags: tags
       };
+      console.log("编辑",this.newFlashInfo)
       // 一旦对话框打开，直接设置内容
       this.$nextTick(() => {
-        let contentJson = JSON.parse(content);  // 将字符串解析为 JSON 对象
-        this.$refs.editor.editor.commands.setContent(contentJson);
+        this.$refs.editor.editor.commands.setContent(this.newFlashInfo.content);
       });
     },
 

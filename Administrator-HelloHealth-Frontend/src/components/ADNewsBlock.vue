@@ -32,7 +32,7 @@
       </el-container>
     </el-container>
 
-    <div class="news-block-actions" v-if="is_editing">
+    <div class="news-block-actions" v-if="is_editing && isMy()">
       <!-- 编辑按钮 -->
       <i class="fi fi-rr-pencil clickable" @click="onEdit"/>
       <div style="width: 10px;"/>
@@ -56,9 +56,9 @@ export default {
     flash_date: String,
     flash_content: Object,
     flash_tags_list: Array,
-    is_editing: Boolean
+    is_editing: Boolean,
+    flash_admin: Number,
   },
-
   computed: {
     truncatedTitle: function() {
       const limit = 5; /* title最大字符数 */
@@ -82,8 +82,12 @@ export default {
       }
   },
   methods: {
+    isMy() {
+      return  (this.flash_admin===globalData.userInfo.user_id)
+    },
     onEdit() {
       this.$emit('edit', this.$props.flash_id, this.$props.flash_title, this.$props.flash_content, this.$props.flash_tags_list);
+      console.log("isMy?",this.flash_admin===globalData.userInfo.user_id)
     },
     onDelete() {
       this.$messageBox.confirm(`确定删除id为${this.flash_id}的新闻?`, '提示', {

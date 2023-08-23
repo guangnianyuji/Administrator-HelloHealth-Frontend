@@ -25,6 +25,7 @@
           :flash_tags_list="flash.tags"
           :flash_id="flash.id"
           :is_editing="isEditing"
+          :flash_admin="flash.admin_id"
           @delete="handleDelete"
           @edit="onEdit"
       />
