@@ -50,9 +50,8 @@
             class="tagSelector"
             v-model="newFlashInfo.tags"
             multiple
-            placeholder="选择2~4个标签"
+            placeholder="选择1~4个标签"
             style="width: 100%"
-            :allow-create="true"
             :filterable="true"
             :multiple-limit="4"
         >
@@ -93,7 +92,9 @@ import TipTapEditableExpert from "@/components/postView/TipTapEditableExpert.vue
 
 export default defineComponent({
   name: "FlashEditorView",
+
   components: {TipTapEditableExpert, WritePostButton, TipTapEditable, NewsTagSelector, ADNewsBlockList},
+
   data() {
     return {
       selectedTagId: null,
@@ -101,7 +102,6 @@ export default defineComponent({
       newFlashInfo: {
         flash_being_edited_id: -1,
         title:"",
-        introduction:"",
         content: "",
         tags: []
       },
@@ -118,6 +118,7 @@ export default defineComponent({
         content: "",
         tags: []
       };
+      this.$refs.editor.editor.commands.clearContent();
     },
     handleTagSelected(tagId) {
       this.selectedTagId = tagId;
@@ -132,11 +133,14 @@ export default defineComponent({
       };
       // 一旦对话框打开，直接设置内容
       this.$nextTick(() => {
-        this.$refs.editor.editor.commands.setContent(content);
+        let contentJson = JSON.parse(content);  // 将字符串解析为 JSON 对象
+        this.$refs.editor.editor.commands.setContent(contentJson);
       });
     },
+
     submitNewFlash() {
       if(this.$refs.editor.editor.state.doc.textContent.length < 15) {
+
         ElMessage.error('请输入更多内容。');
         return;
       }
@@ -144,10 +148,11 @@ export default defineComponent({
         ElMessage.error('请输入更长的标题。');
         return;
       }
-      if(this.newFlashInfo.tags.length < 2) {
+      if(this.newFlashInfo.tags.length < 1) {
         ElMessage.error('请选择更多标签。');
         return;
       }
+
       this.newFlashInfo.content = this.$refs.editor.editor.getJSON();
       console.log(this.newFlashInfo.content)
         axios.post("/api/Flash/sendFlash",
@@ -186,6 +191,7 @@ export default defineComponent({
                         error.defaultHandler("资讯发送失败")
                 }
             })
+
 
     },
   },
@@ -228,20 +234,6 @@ export default defineComponent({
     border-radius: 2px;
     transform: translate(-16px , -50%);
 }
-.news-block {
-  display: flex;
-  justify-content: left;
-  margin-top: 3%;
-  margin-left: 3%;
-}
-.new-card {
-  height: 130px;
-  width: 950px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .manage-wrapper{
   width:fit-content;
   display: flex;

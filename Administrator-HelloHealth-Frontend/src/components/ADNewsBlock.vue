@@ -50,6 +50,7 @@ import globalData from "@/global/global";
 export default {
   name: "ADNewsBlock",
   props: {
+
     flash_id: Number,
     flash_title: String,
     flash_date: String,
@@ -67,6 +68,7 @@ export default {
         return this.flash_title;
       }
     },
+
       flash_image: function() {
           let contentJson = this.flash_content
           if (contentJson && Array.isArray(contentJson.content)) {
@@ -88,6 +90,7 @@ export default {
               }
           }
           return '';
+
       }
   },
   methods: {
@@ -101,7 +104,9 @@ export default {
         type: 'warning'
       }).then(() => {
         // 确定删除
+
         axios.delete(`/api/Flash/delete/${this.flash_id}`)
+
             .then(res => {
               this.$emit('delete', this.flash_id)
             });
