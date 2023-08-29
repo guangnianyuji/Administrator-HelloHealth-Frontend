@@ -19,7 +19,7 @@
       <ADNewsBlock
           v-for="flash in currentNewsList"  :key="flash.id"
           :flash_title="flash.title"
-          :flash_date="flash.date"
+          :flash_date="flash.time"
           :flash_image="flash.image"
           :flash_content="flash.content"
           :flash_tags_list="flash.tags"
@@ -121,6 +121,7 @@ export default {
     },
     addNews(newNews) {
       this.newsList.push(newNews);
+      this.getNewsList();
     },
     updateNews(newNews) {
       // 在 newsList 中找到相同 id 的新闻，然后进行更新
@@ -130,6 +131,7 @@ export default {
           break;
         }
       }
+      this.getNewsList();
     },
   },
   mounted() {  // mounted 时获取全部新闻列表

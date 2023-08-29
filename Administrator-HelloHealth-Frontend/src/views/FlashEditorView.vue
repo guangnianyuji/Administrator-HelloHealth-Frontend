@@ -185,7 +185,7 @@ export default defineComponent({
                 if(error.network) return;
                 switch (error.errorCode){
                     case 400:
-                        ElMessage.error('选择的标签太多');
+                        ElMessage.error('选择的标签数量有误');
                         break;
                     default:
                         error.defaultHandler("资讯发送失败")

@@ -61,7 +61,7 @@ export default {
   },
   computed: {
     truncatedTitle: function() {
-      const limit = 5; /* title最大字符数 */
+      const limit = 15; /* title最大字符数 */
       if (this.flash_title.length > limit) {
         return this.flash_title.substring(0, limit) + '...';
       } else {
@@ -69,16 +69,17 @@ export default {
       }
     },
       flash_display_content: function() {
-          let contentJson = this.flash_content
-          if (contentJson && Array.isArray(contentJson.content)) {
-              for (const contentObj of contentJson.content) {
-                  if (contentObj.type === 'paragraph') {
-                      return this.truncateContent(contentObj.content[0].text);
-                  }
-              }
+        let contentJson = this.flash_content
+        let paragraphs = [];
+        if (contentJson && Array.isArray(contentJson.content)) {
+          for (const block of contentJson.content) {
+            if (block.type === 'paragraph' && Array.isArray(block.content)) {
+              let paragraph = block.content.map(node => node.text).join(' ');
+              paragraphs.push(paragraph);
+            }
           }
-          return '';
-
+        }
+        return this.truncateContent(paragraphs.join(' '));
       }
   },
   methods: {
@@ -90,7 +91,7 @@ export default {
       console.log("isMy?",this.flash_admin===globalData.userInfo.user_id)
     },
     onDelete() {
-      this.$messageBox.confirm(`确定删除id为${this.flash_id}的新闻?`, '提示', {
+      this.$messageBox.confirm(`是否确定删除新闻:${this.flash_title}?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -107,7 +108,7 @@ export default {
       });
     },
       truncateContent: function(content) {
-          const limit = 10; /* preview最大字符数 */
+          const limit = 50; /* preview最大字符数 */
           if (content.length > limit) {
               return content.substring(0, limit) + '...';
           } else {
@@ -164,7 +165,7 @@ export default {
   height: 2px;                      /* 鼠标悬停时改变粗细 */
 }
 .flash-date {
-  width: 25%;          /* 日期宽度为 25% */
+  width: 40%;          /* 日期宽度为 40% */
   text-align: right;   /* 日期右对齐 */
 }
 .flash-preview {
