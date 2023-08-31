@@ -32,7 +32,7 @@
       </el-container>
     </el-container>
 
-    <div class="news-block-actions" v-if="is_editing && isMy()">
+    <div class="news-block-actions" v-if="isMy()">
       <!-- 编辑按钮 -->
       <i class="fi fi-rr-pencil clickable" @click="onEdit"/>
       <div style="width: 10px;"/>
@@ -116,7 +116,9 @@ export default {
           }
       },
       goFullContent() {
-          window.location = (globalData.userWebsite + "/news/"+this.$props.flash_id);
+        let newWindow=window.open('about:blank');
+        newWindow.location = (globalData.userWebsite + "/news/"+this.$props.flash_id);
+        newWindow.focus()
       },
   }
 }

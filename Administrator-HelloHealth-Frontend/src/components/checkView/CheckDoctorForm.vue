@@ -150,6 +150,7 @@ export default{
     }),
     methods:{
         ssubmit() {
+            console.log(this.check_info)
             axios.post("/api/Check/Doctor/Submit",this.check_info)
             .then((res)=> {
             let responseObj = res.data;

@@ -111,12 +111,26 @@
         >
         </el-descriptions>
         <el-row v-if="userPosts">
-          <ADNewsBlockList :is-editing="false"/>
+          <ADNewsBlockList :is-editing="false" @edit="handleEdit" ref="newsBlockListInstance"/>
         </el-row>
       </el-card>
     </div>
 
   </div>
+
+  <el-dialog
+      v-model="dialogVisible"
+      class="editorDialog"
+      modal-class="editorDialogModal"
+      :title="修改资讯"
+      width="70%"
+      top="0"
+    >
+    
+    <FlashEditorForm v-if="dialogVisible" :NewFlashInfo="newFlashInfo" :Tags="tags" @close-me="dialogVisible=false" @refresh="refreshList"></FlashEditorForm>
+ 
+    </el-dialog>
+
 </template>
 
 <script>
@@ -124,10 +138,11 @@ import { ElMessage } from "element-plus";
 import axios from "axios"
 import globalData from "@/global/global"
 import ADNewsBlockList from "@/components/ADNewsBlockList.vue";
+import FlashEditorForm from '@/components/FlashEditorForm.vue';
 export default {
   name: "AdministratorInfoView",
 
-  components: {ADNewsBlockList},
+  components: {FlashEditorForm,ADNewsBlockList},
 
   data(){
     return{
@@ -177,6 +192,26 @@ export default {
     }
   },
   methods:{
+    refreshList(newNews){
+      if (newNews.id === -1) {
+         // 如果是新建新闻，调用 addNews
+         this.$refs.newsBlockListInstance.addNews(newNews);
+      } else {
+        // 如果是编辑新闻，调用 updateNews
+         this.$refs.newsBlockListInstance.updateNews(newNews);
+      }
+    },
+    handleEdit(flash_id, title, content, tags) {
+     
+     this.newFlashInfo = {
+       flash_being_edited_id: flash_id,
+       title: title,
+       content: content, // 规定content传入的是资讯文章对象，不是json字符串
+       tags: tags
+     };
+     this.dialogVisible = true;
+     console.log("编辑",this.newFlashInfo)
+    },
     showPhotoUpload(){
       //显示上传头像框
       this.photoUpload = true;

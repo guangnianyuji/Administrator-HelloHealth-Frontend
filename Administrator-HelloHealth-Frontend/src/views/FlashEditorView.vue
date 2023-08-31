@@ -41,7 +41,10 @@
       width="70%"
       top="0"
     >
-    <el-form label-width="50px" label-position="left" :model="newFlashInfo">
+    
+    <FlashEditorForm v-if="dialogVisible" :NewFlashInfo="newFlashInfo"  @close-me="dialogVisible=false" @refresh="refreshList"></FlashEditorForm>
+     
+    <!-- <el-form label-width="50px" label-position="left" :model="newFlashInfo">
       <el-form-item label="标题">
         <el-input v-model="newFlashInfo.title" />
       </el-form-item>
@@ -71,7 +74,7 @@
                     发布
                 </el-button>
             </span>
-      </template>
+      </template> -->
     </el-dialog>
   </div>
   
@@ -89,11 +92,12 @@ import {ElMessage} from "element-plus";
 import axios from "axios";
 import WritePostButton from "@/components/postBoardView/WritePostButton.vue";
 import TipTapEditableExpert from "@/components/postView/TipTapEditableExpert.vue";
+import FlashEditorForm from '@/components/FlashEditorForm.vue';
 
 export default defineComponent({
   name: "FlashEditorView",
 
-  components: {TipTapEditableExpert, WritePostButton, TipTapEditable, NewsTagSelector, ADNewsBlockList},
+  components: {FlashEditorForm,TipTapEditableExpert, WritePostButton, TipTapEditable, NewsTagSelector, ADNewsBlockList},
 
   data() {
     return {
@@ -106,104 +110,118 @@ export default defineComponent({
         tags: []
       },
       tags: [],
+
     }
   },
   methods: {
-    onCreateFlash(){
-      this.dialogVisible=true;
-
-      this.newFlashInfo = {
-        flash_being_edited_id: -1,
-        title:"",
-        content: "",
-        tags: []
-      };
-      this.$refs.editor.editor.commands.clearContent();
+    refreshList(newNews){
+      if (newNews.id === -1) {
+         // 如果是新建新闻，调用 addNews
+         this.$refs.newsBlockListInstance.addNews(newNews);
+      } else {
+        // 如果是编辑新闻，调用 updateNews
+         this.$refs.newsBlockListInstance.updateNews(newNews);
+      }
     },
+
+     onCreateFlash(){
+       
+         this.newFlashInfo = {
+           flash_being_edited_id: -1,
+           title:"",
+           content: "",
+          tags: []
+      };
+      this.dialogVisible=true;
+      console.log("发布")
+
+    //   this.$refs.editor.editor.commands.clearContent();
+      },
     handleTagSelected(tagId) {
       this.selectedTagId = tagId;
     },
     handleEdit(flash_id, title, content, tags) {
-      this.dialogVisible = true;
+     
       this.newFlashInfo = {
         flash_being_edited_id: flash_id,
         title: title,
         content: content, // 规定content传入的是资讯文章对象，不是json字符串
         tags: tags
       };
+      this.dialogVisible = true;
       console.log("编辑",this.newFlashInfo)
       // 一旦对话框打开，直接设置内容
-      this.$nextTick(() => {
-        this.$refs.editor.editor.commands.setContent(this.newFlashInfo.content);
-      });
+      // this.$nextTick(() => {
+      //   this.$refs.editor.editor.commands.setContent(this.newFlashInfo.content);
+      // });
     },
 
-    submitNewFlash() {
-      if(this.$refs.editor.editor.state.doc.textContent.length < 15) {
+    // submitNewFlash() {
+    //   if(this.$refs.editor.editor.state.doc.textContent.length < 15) {
 
-        ElMessage.error('请输入更多内容。');
-        return;
-      }
-      if(this.newFlashInfo.title.length < 5) {
-        ElMessage.error('请输入更长的标题。');
-        return;
-      }
-      if(this.newFlashInfo.tags.length < 1) {
-        ElMessage.error('请选择更多标签。');
-        return;
-      }
+    //     ElMessage.error('请输入更多内容。');
+    //     return;
+    //   }
+    //   if(this.newFlashInfo.title.length < 5) {
+    //     ElMessage.error('请输入更长的标题。');
+    //     return;
+    //   }
+    //   if(this.newFlashInfo.tags.length < 1) {
+    //     ElMessage.error('请选择更多标签。');
+    //     return;
+    //   }
 
-      this.newFlashInfo.content = this.$refs.editor.editor.getJSON();
-      console.log(this.newFlashInfo.content)
-        axios.post("/api/Flash/sendFlash",
-            {
-                content: JSON.stringify(this.$refs.editor.editor.getJSON()),
-                flash_being_edited_id: this.newFlashInfo.flash_being_edited_id,
-                tags: this.newFlashInfo.tags,
-                title:this.newFlashInfo.title
-            })
-            .then(res => {
-                ElMessage.success('发送成功。');
-                this.dialogVisible = false;
-                let newNews = {
-                    id: this.newFlashInfo.flash_being_edited_id,
-                    title: this.newFlashInfo.title,
-                    content: this.newFlashInfo.content,
-                    tags: this.newFlashInfo.tags,
-                };
+    //   this.newFlashInfo.content = this.$refs.editor.editor.getJSON();
+    //   console.log(this.newFlashInfo.content)
+    //     axios.post("/api/Flash/sendFlash",
+    //         {
+    //             content: JSON.stringify(this.$refs.editor.editor.getJSON()),
+    //             flash_being_edited_id: this.newFlashInfo.flash_being_edited_id,
+    //             tags: this.newFlashInfo.tags,
+    //             title:this.newFlashInfo.title
+    //         })
+    //         .then(res => {
+    //             ElMessage.success('发送成功。');
+    //             this.dialogVisible = false;
+    //             let newNews = {
+    //                 id: this.newFlashInfo.flash_being_edited_id,
+    //                 title: this.newFlashInfo.title,
+    //                 content: this.newFlashInfo.content,
+    //                 tags: this.newFlashInfo.tags,
+    //             };
 
-                if (newNews.id === -1) {
-                    // 如果是新建新闻，调用 addNews
-                    this.$refs.newsBlockListInstance.addNews(newNews);
-                } else {
-                    // 如果是编辑新闻，调用 updateNews
-                    this.$refs.newsBlockListInstance.updateNews(newNews);
-                }
-                this.$refs.editor.editor.commands.clearContent();
-            })
-            .catch(error => {
-                if(error.network) return;
-                switch (error.errorCode){
-                    case 400:
-                        ElMessage.error('选择的标签数量有误');
-                        break;
-                    default:
-                        error.defaultHandler("资讯发送失败")
-                }
-            })
+    //             if (newNews.id === -1) {
+    //                 // 如果是新建新闻，调用 addNews
+    //                 this.$refs.newsBlockListInstance.addNews(newNews);
+    //             } else {
+    //                 // 如果是编辑新闻，调用 updateNews
+    //                 this.$refs.newsBlockListInstance.updateNews(newNews);
+    //             }
+    //             this.$refs.editor.editor.commands.clearContent();
+    //         })
+    //         .catch(error => {
+    //             if(error.network) return;
+    //             switch (error.errorCode){
+    //                 case 400:
+    //                     ElMessage.error('选择的标签数量有误');
+    //                     break;
+    //                 default:
+    //                     error.defaultHandler("资讯发送失败")
+    //             }
+    //         })
 
 
-    },
+    // },
   },
-  mounted() { // mounted 时获取全部标签列表
-    axios.get("/api/Flash/childTags")
-        .then(response => {
-          this.tags = response.data.data.tags;
-        })
-        .catch(error => {
-          console.error(error)
-        });
-  }
+  // mounted() { // mounted 时获取全部标签列表
+  //   axios.get("/api/Flash/childTags")
+  //       .then(response => {
+  //         this.tags = response.data.data.tags;
+  //       })
+  //       .catch(error => {
+  //         console.error(error)
+  //       });
+  // }
 })
 </script>
 
