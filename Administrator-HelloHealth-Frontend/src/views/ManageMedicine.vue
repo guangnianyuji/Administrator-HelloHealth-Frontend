@@ -1,5 +1,4 @@
 <template>
-
     <div class="MM_body">
         <el-card class="MM_title">
             <el-row>
@@ -9,7 +8,8 @@
                     </el-row>
                     <el-row>
                         <el-col :span="10">
-                            <el-input style="width: 95%" v-model.change="this.search_value" clearable @change="search" placeholder="请输入药品中文名称"></el-input>
+                            <el-input style="width: 95%" v-model.change="this.search_value" clearable @change="search"
+                                placeholder="请输入药品中文名称"></el-input>
                         </el-col>
                         <el-col :span="3">
                             <el-button type="primary" @click="search">搜索</el-button>
@@ -35,26 +35,19 @@
 
         <!--        药品卡片-->
         <div v-for="(medicine, index) in page_list" :key="medicine.medicine_id">
-            <medicine-info-card
-                    :medicine="medicine"
-                    @deletesuccess="removeFromList(index)"
-            ></medicine-info-card>
-            <br/>
+            <medicine-info-card :medicine="medicine" @deletesuccess="removeFromList(index)"></medicine-info-card>
+            <br />
         </div>
-<!--            如果没有药品-->
-            <div v-if="page_list.length === 0" class="no_medicine">
-                <el-card>暂无药品信息</el-card>
-            </div>
+        <!--            如果没有药品-->
+        <div v-if="page_list.length === 0" class="no_medicine">
+            <el-card>暂无药品信息</el-card>
+        </div>
 
 
         <!--        分页-->
         <div class="pagination">
-            <el-pagination
-                    background
-                    layout="prev, pager, next"
-                    :page-size="PAGESIZE"
-                    :total="all_num"
-                    @current-change="curChange"/>
+            <el-pagination background layout="prev, pager, next" :page-size="PAGESIZE" :total="all_num"
+                @current-change="curChange" />
         </div>
     </div>
 </template>
@@ -62,11 +55,11 @@
 <script>
 import MedicineInfoCard from "@/components/MedicineInfoCard.vue";
 import axios from "axios";
-import {ref} from "vue";
+import { ref } from "vue";
 
 export default {
     name: "ManageMedicineView",
-    components: {MedicineInfoCard},
+    components: { MedicineInfoCard },
     data() {
         return {
             cur_page: 1,
@@ -118,35 +111,49 @@ export default {
                 },
             ], //经过筛选条件后下面展示的药品
             all_medicine_list: [], //最初赋值获得的所有药品
-            page_list:[],//当前页面的药品列表
+            page_list: [],//当前页面的药品列表
             search_value: "",
             isLoading: false,
 
         }
     },
     methods: {
-        search(){
-            this.isLoading=true;
-            // 根据输入的药品名称进行搜索
-            // 如果输入为空，则显示所有药品
+        search() {
+            this.isLoading = true;
             if (this.search_value === "") {
                 this.medicine_list = this.all_medicine_list;
-                this.all_num = this.medicine_list.length;this.page_num = Math.ceil(this.all_num / this.PAGESIZE); //向上取整
-                this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
-                this.isLoading=false;
-            }
-            else{// 否则，根据输入的药品名称进行搜索
+            } else {
+                const searchTerm = this.normalizeSearchTerm(this.search_value);
                 this.medicine_list = this.all_medicine_list.filter((medicine) => {
-                    return medicine.medicine_ch_name.includes(this.search_value)?true:false;//该药品中文名是否包含输入的文字
+                    const normalizedChName = this.normalizeSearchTerm(medicine.medicine_ch_name);
+                    const normalizedEnName = this.normalizeSearchTerm(medicine.medicine_en_name);
+                    return (
+                        normalizedChName.includes(searchTerm) ||
+                        normalizedEnName.includes(searchTerm)
+                    );
                 });
-                this.all_num = this.medicine_list.length;
-                this.page_num = Math.ceil(this.all_num / this.PAGESIZE); //向上取整
-                this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
-                this.isLoading=false;
-                console.log("筛选后的药品列表：");
-                console.log(this.medicine_list);
             }
+
+            this.all_num = this.medicine_list.length;
+            this.page_num = Math.ceil(this.all_num / this.PAGESIZE);
+            this.page_list = this.medicine_list.slice(
+                (this.cur_page - 1) * this.PAGESIZE,
+                this.cur_page * this.PAGESIZE
+            );
+            this.isLoading = false;
+            console.log("筛选后的药品列表：");
+            console.log(this.medicine_list);
         },
+
+        normalizeSearchTerm(term) {
+            // 检查 term 是否为 null 或 undefined，如果是则返回一个空字符串
+            if (term === null || term === undefined) {
+                return "";
+            }
+            // 否则，规范化搜索关键字，例如将其转换为小写并处理特殊字符
+            return term.toLowerCase();
+        },
+
         curChange(res) {
             this.cur_page = res;
             this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
@@ -168,7 +175,7 @@ export default {
             this.curChange(this.cur_page);
             this.all_num--;
         },
-        refresh(){
+        refresh() {
             console.log("我更新了！")
             this.isLoading = true
             axios({
@@ -180,7 +187,7 @@ export default {
                 this.page_num = Math.ceil(this.all_num / this.PAGESIZE); //向上取整
                 this.all_medicine_list = res.data.data.medicineBasicInfoList;
                 //this.medicine_list = this.all_medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
-                this.medicine_list =this.all_medicine_list;//一开始没有任何筛选条件时
+                this.medicine_list = this.all_medicine_list;//一开始没有任何筛选条件时
                 console.log("所有药品列表：");
                 console.log(this.medicine_list);
                 this.page_list = this.medicine_list.slice((this.cur_page - 1) * this.PAGESIZE, this.cur_page * this.PAGESIZE);
@@ -253,13 +260,11 @@ button.fancy {
     width: 100%;
     height: 100%;
     border-radius: 12px;
-    background: linear-gradient(
-            to left,
+    background: linear-gradient(to left,
             hsl(340deg 100% 16%) 0%,
             hsl(340deg 100% 32%) 8%,
             hsl(340deg 100% 32%) 92%,
-            hsl(340deg 100% 16%) 100%
-    );
+            hsl(340deg 100% 16%) 100%);
 }
 
 .front {
@@ -325,13 +330,15 @@ button:active .edit-front {
 .centerIcon {
     margin: 0 0 0 5px;
 }
-.no_medicine{
+
+.no_medicine {
     margin-top: 20px;
     font-size: 20px;
     color: gray;
     text-align: center;
     animation: fly-1 1s infinite alternate;
 }
+
 @keyframes fly-1 {
     from {
         transform: translateY(0.1em);
