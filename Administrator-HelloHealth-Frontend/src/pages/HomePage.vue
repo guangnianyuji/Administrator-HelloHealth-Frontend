@@ -133,10 +133,13 @@ onMounted(()=>{
                 <SearchBox @searchStart="searchStart"></SearchBox>
             </div>
             <div class="rightTitle" v-if="isLogin">
+                <!--
                 <img alt="" src="../assets/titleImg1.png">
                 <LinkButtonWithIcon font-color="#fff" text="消息通知" icon="fi-rr-bell" :has-notification="userInfo.unread_notification" @click="notificationButtonClicked"></LinkButtonWithIcon>
+                 
                 <div class="line">
                 </div>
+                -->
                 <LinkButtonWithIcon font-color="#fff" text="退出" icon="" @click="exitButtonClicked"></LinkButtonWithIcon>
             </div>
             <div class="rightTitle" v-if="!isLogin">
