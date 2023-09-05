@@ -158,12 +158,14 @@ const sendVerificationCode = async () => {
         errorMsg.value = '错误代码' + responseObj.errorCode
         isError.value = true
     } else {
-        if (responseObj.data.status === true) {
-            isError.value = false
-            errorMsg.value = ''
-        } else {
-            errorMsg.value = '发送失败，请稍后重试'
-            isError.value = true
+        if(error.network) return;
+        switch (error.errorCode) {
+            case 104:
+                errorMsg.value = '发送失败，请稍后重试'
+                isError.value = true
+                break;
+            default:
+                error.defaultHandler();
         }
     }
 }
