@@ -10,10 +10,10 @@
         </el-form-item>
           
          <el-form-item label="执业医师资格证:">
-            <img :src="applydoctor_info.certification">
+            <img :src="applydoctor_info.certification" style="width: 100%;height: 100%;objec-fit: cover;">
          </el-form-item>
          <el-form-item label="执业医师执业证:">
-            <img :src="applydoctor_info.license">
+            <img :src="applydoctor_info.license" style="width: 100%;height: 100%;objec-fit: cover;">
          </el-form-item>
 
          <el-form-item v-if="is_checked" label="医生职称:">

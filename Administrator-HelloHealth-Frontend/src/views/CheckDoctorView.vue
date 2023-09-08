@@ -57,7 +57,7 @@
                     不通过
                  </div>
                  <div>
-                    {{ scope.row.review_date }}
+                    {{ scope.row.review_time }}
                 </div>
             </template>
         </el-table-column>
