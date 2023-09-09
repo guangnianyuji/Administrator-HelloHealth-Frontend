@@ -144,20 +144,23 @@ const sendVerificationCode = async () => {
         }
     }, 1000);
 
-    let response = await axios.post('/api/SendVertificationCode', requestVertificationCode)
-    let responseObj = response.data
-    if (responseObj.errorCode !== 200) {
-        errorMsg.value = '错误代码' + responseObj.errorCode
-        isError.value = true
-    } else {
-        if (responseObj.data.status === true) {
-            isError.value = false
-            errorMsg.value = ''
-        } else {
-            errorMsg.value = '发送失败，请稍后重试'
-            isError.value = true
+    axios.post('/api/Register/SendVerificationCode', requestVertificationCode)
+    .then(response=>{
+        isError.value = false
+        errorMsg.value = ''
+        ElMessage.success("发送成功。")
+    }).catch(error => {
+        if(error.network) return;
+        switch (error.errorCode) {
+            case 104:
+                errorMsg.value = '发送失败，请稍后重试'
+                isError.value = true
+                break;
+            default:
+                error.defaultHandler();
         }
-    }
+    })
+    
 }
 </script>
 
