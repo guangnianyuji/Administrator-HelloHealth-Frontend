@@ -125,6 +125,7 @@ export default{
             .then(()=>{
                 
                 this.selected_applydoctor=applydoctor_info;
+                console.log(applydoctor_info)
                 this.checkDialogVisible=true;
             })
 

@@ -151,6 +151,7 @@ export default{
     methods:{
         ssubmit() {
             console.log(this.check_info)
+            
             axios.post("/api/Check/Doctor/Submit",this.check_info)
             .then((res)=> {
             let responseObj = res.data;
@@ -193,7 +194,9 @@ export default{
     },
     created()
     {
+        console.log(this.applydoctor_info)
         this.check_info.apply_id=this.applydoctor_info.apply_id;
+        console.log(this.check_info)
         this.check_info.user_id=this.applydoctor_info.user_id;
     }
 
