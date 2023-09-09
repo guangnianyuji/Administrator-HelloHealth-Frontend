@@ -20,6 +20,8 @@
                           :auto-upload="false"
                           :on-change="handleChange"
                           accept="image/jpg,image/jpeg,image/png,image/gif"
+                          :multiple="false"
+                          :file-list="fileList"
                       >
                         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                         <div slot="tip" class="el-upload__tip">上传文件格式为.jpg、.jpeg、.png、.gif，且不超过 2MB</div>
@@ -153,6 +155,7 @@ export default {
       dialogVisible:false,    //对话框是否可见
       size:'small',
       file:null, //上传的文件对象
+      fileList: [],
       photoUpload:false,   //头像上传，初始为false
       userPosts: []   // 用户上传的帖子
     }
@@ -257,6 +260,9 @@ export default {
           });
     },
     handleChange(file,fileList){
+      if (fileList.length > 1) {
+        fileList.splice(0, fileList.length - 1); // 只保留最后一个文件
+      }
       console.log(file,fileList);
       this.file = file.raw
     },
