@@ -1,4 +1,6 @@
 <script setup>
+import globalData from "@/global/global";
+
 const props = defineProps({
     avatarUrl: String,
     userName: String,
@@ -6,7 +8,7 @@ const props = defineProps({
 })
 
 const goToUserInfoPage = () =>{
-    alert("前往用户界面！"+props.userId)
+    window.open(`${globalData.userWebsite}/user/${props.userId}`)
 }
 </script>
 
